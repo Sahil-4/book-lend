@@ -1,0 +1,75 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["omitApi"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String         @id @default(uuid())
+  username         String         @unique
+  name             String
+  phone            String
+  bio              String?
+  password         String
+  accessToken      String?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  books            Book[]
+  notifications    Notification[]
+  messagesSent     Message[]      @relation("messagesSent")
+  messagesReceived Message[]      @relation("messagesReceived")
+  chats            Chat[]         @relation("ChatParticipants")
+}
+
+model Book {
+  id           String   @id @default(uuid())
+  title        String
+  description  String
+  author       String
+  genre        String
+  preview      String?
+  rentingPrice Float?
+  sellingPrice Float?
+  status       String
+  sellerId     String
+  seller       User     @relation(fields: [sellerId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  timestamp DateTime @default(now())
+  type      String
+  content   String
+  isRead    Boolean  @default(false)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Chat {
+  id           String    @id @default(uuid())
+  participants User[]    @relation("ChatParticipants")
+  messages     Message[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Message {
+  id         String   @id @default(uuid())
+  type       String
+  content    String
+  isRead     Boolean  @default(false)
+  senderId   String
+  receiverId String
+  chatId     String
+  sender     User     @relation("messagesSent", fields: [senderId], references: [id])
+  receiver   User     @relation("messagesReceived", fields: [receiverId], references: [id])
+  chat       Chat     @relation(fields: [chatId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
