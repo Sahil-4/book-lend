@@ -5,6 +5,8 @@ import {
   readNotification,
   deleteNotifications,
 } from "../controllers/notification.controllers.js";
+import { validateRequest } from "../middlewares/validateRequest.js";
+import { notificationSchema } from "../schema/validationSchema.js";
 import { authenticate } from "../middlewares/authenticate.js";
 
 const router = Router();
@@ -13,7 +15,7 @@ router.use(authenticate);
 
 router.get("/", getAllNotifications);
 
-router.post("/", createNotification);
+router.post("/", validateRequest(notificationSchema), createNotification);
 
 router.get("/read", readNotification);
 

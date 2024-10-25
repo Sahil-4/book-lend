@@ -9,6 +9,8 @@ import {
   updateUserProfile,
   deleteUser,
 } from "../controllers/user.controllers.js";
+import { userLoginSchema, userSignupSchema } from "../schema/validationSchema.js";
+import { validateRequest } from "../middlewares/validateRequest.js";
 import { authenticate } from "../middlewares/authenticate.js";
 
 const router = Router();
@@ -17,9 +19,9 @@ router.get("/", authenticate, getAllUsers);
 
 router.get("/user/:id", authenticate, getUserById);
 
-router.post("/signup", signup);
+router.post("/signup", validateRequest(userSignupSchema), signup);
 
-router.post("/login", login);
+router.post("/login", validateRequest(userLoginSchema), login);
 
 router.get("/logout", authenticate, logout);
 

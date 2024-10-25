@@ -9,6 +9,7 @@ import {
   deleteBook,
 } from "../controllers/book.controllers.js";
 import { validateRequest } from "../middlewares/validateRequest.js";
+import { bookSchema, bookSchemaUpdate } from "../schema/validationSchema.js";
 import { authenticate } from "../middlewares/authenticate.js";
 
 const router = Router();
@@ -23,9 +24,9 @@ router.get("/search", searchBooks);
 
 router.get("/search/:id", getBookById);
 
-router.post("/", createBook);
+router.post("/", validateRequest(bookSchema), createBook);
 
-router.put("/:id", updateBook);
+router.put("/:id", validateRequest(bookSchemaUpdate), updateBook);
 
 router.delete("/:id", deleteBook);
 
