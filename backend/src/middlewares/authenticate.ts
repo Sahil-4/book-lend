@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import logger from "../utils/logger.js";
 import { APIResponse } from "../utils/APIResponse.js";
 import * as User from "../models/user.model.js";
+import { ExtendedError, Socket } from "socket.io";
 
 const verifyToken = (token: string) => {
   try {
@@ -57,5 +58,45 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
   } catch (error: any) {
     logger.error(error.message);
     res.status(401).send(new APIResponse(401, null, "failed to authenticate"));
+  }
+};
+
+export const authenticateIO = async (socket: Socket, next: (err?: ExtendedError) => void) => {
+  try {
+    const __auth_token__ = String(socket.handshake.headers.__auth_token__);
+    const __access_token__ = String(socket.handshake.headers.__access_token__);
+
+    if (!__auth_token__ || !__access_token__) {
+      return next(new Error("failed to authenticate"));
+    }
+
+    // verify tokens
+    const authRes = verifyToken(__auth_token__);
+    const accessRes = verifyToken(__access_token__);
+
+    if (authRes === "0" || accessRes === "0") {
+      next(new Error("token expired"));
+    }
+
+    if (authRes === "-1" || accessRes === "-1") {
+      next(new Error("invalid auth token"));
+    }
+
+    if (authRes != accessRes) {
+      next(new Error("invalid auth token"));
+    }
+
+    const user = await User.getUserById(authRes);
+
+    if (!user) {
+      next(new Error("invalid auth token"));
+    }
+
+    socket.data.user_id = user?.id;
+
+    next();
+  } catch (error: any) {
+    logger.error(error.message);
+    return next(new Error("failed to authenticate"));
   }
 };
