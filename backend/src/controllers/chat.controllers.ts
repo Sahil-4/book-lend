@@ -3,6 +3,7 @@ import logger from "../utils/logger.js";
 import { APIResponse } from "../utils/APIResponse.js";
 import * as Chat from "../models/chat.model.js";
 import * as Message from "../models/message.model.js";
+import { broadcastChatMessage } from "../utils/socketEmitters.js";
 
 const getAllChats = async (req: Request, res: Response) => {
   try {
@@ -43,6 +44,8 @@ const addChatMessage = async (req: Request, res: Response) => {
     const message = await Message.createMessage({ chatId, senderId, type, receiverId, content });
 
     res.status(200).send(new APIResponse(200, message, "message added"));
+
+    broadcastChatMessage(message);
   } catch (error: any) {
     logger.error(error.message);
     res.status(501).send(new APIResponse(501, null, "failed to add message"));
