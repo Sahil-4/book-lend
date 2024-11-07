@@ -13,8 +13,8 @@ redis.on("connect", () => {
   logger.info("redis connected");
 });
 
-redis.on("error", (err) => {
-  logger.error(err);
+redis.on("error", (error: any) => {
+  logger.error(error.message);
 });
 
 process.on("SIGINT", () => {

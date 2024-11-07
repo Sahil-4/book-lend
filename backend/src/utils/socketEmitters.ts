@@ -35,7 +35,7 @@ export const broadcastChatMessage = async (message: Message) => {
     }
 
     io.to(senderSocketId!).emit("chat:message-received-ack", "message delivered");
-  } catch (error) {
-    logger.error(error);
+  } catch (error: any) {
+    logger.error(error.message);
   }
 };
