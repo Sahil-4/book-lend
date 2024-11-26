@@ -1,8 +1,12 @@
+-- CreateEnum
+CREATE TYPE "Status" AS ENUM ('Sell', 'Rent');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "username" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "avatar" TEXT,
     "phone" TEXT NOT NULL,
     "bio" TEXT,
     "password" TEXT NOT NULL,
@@ -21,9 +25,8 @@ CREATE TABLE "Book" (
     "author" TEXT NOT NULL,
     "genre" TEXT NOT NULL,
     "preview" TEXT,
-    "rentingPrice" DOUBLE PRECISION,
-    "sellingPrice" DOUBLE PRECISION,
-    "status" TEXT NOT NULL,
+    "price" DOUBLE PRECISION NOT NULL,
+    "status" "Status" NOT NULL,
     "sellerId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
