@@ -12,6 +12,7 @@ model User {
   id               String         @id @default(uuid())
   username         String         @unique
   name             String
+  avatar             String?
   phone            String
   bio              String?
   password         String
@@ -25,6 +26,11 @@ model User {
   chats            Chat[]         @relation("ChatParticipants")
 }
 
+enum Status {
+  Sell
+  Rent
+}
+
 model Book {
   id           String   @id @default(uuid())
   title        String
@@ -32,9 +38,8 @@ model Book {
   author       String
   genre        String
   preview      String?
-  rentingPrice Float?
-  sellingPrice Float?
-  status       String
+  price Float
+  status       Status
   sellerId     String
   seller       User     @relation(fields: [sellerId], references: [id])
   createdAt    DateTime @default(now())
