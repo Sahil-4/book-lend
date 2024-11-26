@@ -69,4 +69,22 @@ export const deleteBook = async (id: string): Promise<Book> => {
   });
 };
 
+export const getAllAuthors = async (): Promise<string[]> => {
+  const result = await prisma.book.findMany({
+    distinct: ["author"],
+    select: { author: true },
+  });
+
+  return result.map((book) => book.author);
+};
+
+export const getAllGenres = async (): Promise<string[]> => {
+  const result = await prisma.book.findMany({
+    distinct: ["genre"],
+    select: { genre: true },
+  });
+
+  return result.map((book) => book.genre);
+};
+
 export type { Book };
