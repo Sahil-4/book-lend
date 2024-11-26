@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 interface User {
   id: string;
   username: string;
+  avatar: string | null;
   name: string;
   phone: string;
   bio: string | null;

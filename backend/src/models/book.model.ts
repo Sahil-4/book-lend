@@ -7,9 +7,8 @@ interface Book {
   author: string;
   genre: string;
   preview: string | null;
-  rentingPrice: number | null;
-  sellingPrice: number | null;
-  status: string;
+  price: number;
+  status: "Sell" | "Rent";
   sellerId: string;
   createdAt: Date;
   updatedAt: Date;
