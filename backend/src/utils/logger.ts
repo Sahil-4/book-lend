@@ -25,7 +25,7 @@ const morganOptions = {
 const consoleLogFormat = format.combine(
   format.colorize(),
   format.printf(({ level, message, timestamp }) => {
-    return `${timestamp} : ${level} : ${message}`;
+    return `${timestamp} : ${level} : ${JSON.parse(message)}`;
   }),
 );
 
