@@ -1,0 +1,104 @@
+.header {
+  background: var(--primary-color);
+  font-size: var(--font-size-large);
+  height: 52px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-medium);
+  border-bottom: 3px solid var(--border-color);
+}
+
+.header * {
+  color: var(--secondary-color);
+}
+
+.header__nav {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-medium);
+}
+
+.header__nav > ul {
+  display: flex;
+  align-items: center;
+  list-style-type: none;
+  gap: var(--spacing-medium);
+}
+
+.header__profilePreview {
+  height: 32px;
+  width: 32px;
+  background: var(--primary-color);
+  border-radius: 50px;
+  outline: 1px solid var(--accent-color);
+}
+
+.header__menu {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 240px;
+  display: block;
+  color: var(--secondary-color);
+  background: var(--primary-color);
+  padding: var(--spacing-medium);
+  z-index: 1000;
+}
+
+.header__menu__profile_preview {
+  display: grid;
+  grid-template-areas:
+    "avatar username"
+    "avatar profilelink";
+}
+
+.header__menu__profile_preview > span:nth-child(1) {
+  grid-area: avatar;
+  height: 52px;
+  width: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--accent-color);
+}
+
+.header__menu__profile_preview > span:nth-child(2) {
+  grid-area: username;
+}
+
+.header__menu__profile_preview > span:nth-child(3) {
+  grid-area: profilelink;
+}
+
+.header__menu__links {
+  list-style-type: none;
+}
+
+.header__menu__nav_links {
+  list-style-type: none;
+  display: none;
+}
+
+.header__menu__logout_btn {
+  background: var(--primary-color);
+  border: none;
+  padding: var(--spacing-small);
+}
+
+.header__menu__logout_btn:hover {
+  background: var(--secondary-color);
+  color: var(--primary-color);
+  border: 1px solid var(--border-color);
+}
+
+@media only screen and (max-width: 426px) {
+  .header__nav > ul {
+    display: none;
+  }
+
+  .header__menu__nav_links {
+    display: block;
+  }
+}

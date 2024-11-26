@@ -1,0 +1,76 @@
+.add_book_form {
+  width: 620px;
+  margin: var(--spacing-medium) auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.add_book_form__left_area {
+  width: 240px;
+}
+
+.add_book_form__left_area > input,
+.add_book_form__left_area > label,
+.add_book_form__left_area > select,
+.add_book_form__left_area > select > option,
+.add_book_form__right_area > textarea,
+.add_book_form__right_area > input,
+.add_book_form__right_area > label {
+  height: 32px;
+  width: 100%;
+  font-size: var(--font-size-large);
+  display: block;
+  color: var(--accent-color);
+  background: var(--secondary-color);
+  border: 1px solid var(--accent-color);
+  outline: none;
+  margin: var(--spacing-medium);
+}
+
+.add_book_form__left_area > label:nth-child(2) {
+  height: 320px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.add_book_form__right_area > textarea:nth-child(2) {
+  height: 224px;
+}
+
+.add_book_form__left_area > input::placeholder,
+.add_book_form__right_area > textarea::placeholder,
+.add_book_form__right_area > input::placeholder {
+  color: var(--accent-color);
+}
+
+.add_book_form__left_area > input:nth-child(1),
+.add_book_form__right_area > input:nth-child(5) {
+  display: none;
+}
+
+.add_book_form__right_area {
+  width: 360px;
+}
+
+.add_book_form__buttons > button {
+  height: 42px;
+  width: 84px;
+  font-size: var(--font-size-large);
+  font-weight: var(--font-weight-bold);
+  color: var(--secondary-color);
+  background: var(--primary-color);
+  margin: 4px;
+}
+
+@media only screen and (max-width: 480px) {
+  .add_book_form {
+    width: 320px;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .add_book_form__right_area {
+    width: 240px;
+  }
+}

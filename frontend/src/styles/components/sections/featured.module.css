@@ -1,0 +1,31 @@
+.featured_section {
+  width: 960px;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  overflow: scroll;
+  margin: var(--spacing-small) auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scroll-snap-align: start;
+}
+
+.featured_section::-webkit-scrollbar {
+  display: none;
+}
+
+.featured_section__image_container {
+  aspect-ratio: 16 / 9;
+  position: relative;
+}
+
+@media only screen and (max-width: 780px) {
+  .featured_section {
+    width: 480px;
+  }
+}
+
+@media only screen and (max-width: 426px) {
+  .featured_section {
+    width: 320px;
+  }
+}

@@ -1,8 +1,10 @@
+import { Featured, RecentlyAddedBooks } from "@/components/sections";
 
 export default function Home() {
   return (
-    <div>
-      Home
-    </div>
+    <main>
+      <Featured />
+      <RecentlyAddedBooks />
+    </main>
   );
 }

@@ -1,0 +1,25 @@
+.user_profile {
+  width: 720px;
+  display: flex;
+  gap: var(--spacing-medium);
+  justify-content: center;
+  color: var(--primary-color);
+  margin: var(--spacing-medium) auto;
+}
+
+.user_profile__avatar_container {
+  height: 160px;
+  width: 160px;
+  position: relative;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid var(--accent-color);
+}
+
+.user_profile__details {
+  width: 480px;
+}
+
+.user_profile__details > p:nth-child(1) {
+  font-size: var(--font-size-larger);
+}

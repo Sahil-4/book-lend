@@ -1,0 +1,48 @@
+.books_list_container {
+  color: var(--secondary-color);
+  background-color: var(--primary-color);
+  margin: var(--spacing-small) 0;
+  padding: var(--spacing-small);
+}
+
+.books_list {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: space-between;
+}
+
+.book_item {
+  height: 280px;
+  width: 210px;
+  color: var(--accent-color);
+  background: var(--secondary-color);
+  margin: var(--spacing-small);
+  padding: var(--spacing-small);
+  text-align: center;
+  transition-duration: var(--transition-duration);
+  transition-timing-function: var(--transition-ease);
+}
+
+.book_item:hover {
+  margin: 0 var(--spacing-small);
+  margin-bottom: var(--spacing-medium);
+}
+
+.book_item > a:nth-child(1) {
+  font-size: var(--font-size-larger);
+}
+
+.book_item > p:nth-child(2) {
+  font-size: var(--font-size-small);
+}
+
+@media only screen and (max-width: 426px) {
+  .book_item {
+    width: 260px;
+  }
+
+  .books_list {
+    justify-content: center;
+  }
+}

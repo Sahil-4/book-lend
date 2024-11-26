@@ -1,0 +1,38 @@
+.search_box_form_container {
+  margin: var(--spacing-medium);
+}
+
+.search_box_form_container > form {
+  width: 680px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 0 auto;
+}
+
+.search_box_form_container > form > input,
+.search_box_form_container > form > button,
+.search_box_form_container > form > select {
+  height: 48px;
+  margin: var(--spacing-small);
+  color: var(--secondary-color);
+  background: var(--primary-color);
+}
+
+.search_box_form_container > form > input {
+  width: 80%;
+}
+
+.search_box_form_container > form > input::placeholder {
+  color: var(--secondary-color);
+}
+
+.search_box_form_container > form > button {
+  width: 15%;
+}
+
+@media only screen and (max-width: 426px) {
+  .search_box_form_container > form {
+    width: 300px;
+  }
+}
