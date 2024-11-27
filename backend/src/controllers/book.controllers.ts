@@ -127,6 +127,26 @@ const deleteBook = async (req: Request, res: Response) => {
   }
 };
 
+const getAllAuthors = async (req: Request, res: Response) => {
+  try {
+    const authors = await Book.getAllAuthors();
+    res.status(200).send(new APIResponse(200, authors, "fetched authors"));
+  } catch (error: any) {
+    logger.error(error.message);
+    res.status(501).send(new APIResponse(501, null, "failed to fetch authors"));
+  }
+};
+
+const getAllGenres = async (req: Request, res: Response) => {
+  try {
+    const genres = await Book.getAllGenres();
+    res.status(200).send(new APIResponse(200, genres, "fetched genres"));
+  } catch (error: any) {
+    logger.error(error.message);
+    res.status(501).send(new APIResponse(501, null, "failed to fetch genres"));
+  }
+};
+
 export {
   getSellersBooks,
   getAllBooks,
@@ -135,4 +155,6 @@ export {
   searchBooks,
   updateBook,
   deleteBook,
+  getAllAuthors,
+  getAllGenres,
 };

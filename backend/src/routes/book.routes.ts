@@ -2,6 +2,8 @@ import { Router } from "express";
 import {
   getSellersBooks,
   getAllBooks,
+  getAllAuthors,
+  getAllGenres,
   getBookById,
   searchBooks,
   createBook,
@@ -23,6 +25,10 @@ router.get("/all", getAllBooks);
 router.get("/search", searchBooks);
 
 router.get("/search/:id", getBookById);
+
+router.get("/getAllAuthors", getAllAuthors);
+
+router.get("/getAllGenres", getAllGenres);
 
 router.post("/", validateRequest(bookSchema), createBook);
 
