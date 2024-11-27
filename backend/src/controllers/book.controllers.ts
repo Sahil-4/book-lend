@@ -75,8 +75,7 @@ const createBook = async (req: Request, res: Response) => {
       author: body.author,
       genre: body.genre,
       preview: body.preview,
-      rentingPrice: body.rentingPrice,
-      sellingPrice: body.sellingPrice,
+      price: body.price,
       status: body.status,
       sellerId: body.sellerId,
     };
@@ -101,8 +100,7 @@ const updateBook = async (req: Request, res: Response) => {
     if (body.author) bookObj.author = body.author;
     if (body.genre) bookObj.genre = body.genre;
     if (body.preview) bookObj.preview = body.preview;
-    if (body.rentingPrice) bookObj.rentingPrice = body.rentingPrice;
-    if (body.sellingPrice) bookObj.sellingPrice = body.sellingPrice;
+    if (body.price) bookObj.price = body.price;
     if (body.status) bookObj.status = body.status;
 
     const updatedBook = await Book.updateBook(id, bookObj);

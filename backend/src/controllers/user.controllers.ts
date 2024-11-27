@@ -44,6 +44,7 @@ const signup = async (req: Request, res: Response) => {
     // create new user
     const user = await User.createUser({
       username,
+      avatar: null,
       name,
       phone,
       bio,
