@@ -28,13 +28,17 @@ const Menu = (props: propsTypes) => {
 
   return (
     <>
-      {authenticated && (
+      {authenticated ? (
         <button className={styles.header__profilePreview} onClick={() => setMenuOpenState(true)}>
           A
         </button>
+      ) : (
+        <button className={styles.header__menu_open_btn} onClick={() => setMenuOpenState(true)}>
+          Open menu
+        </button>
       )}
       <div className={`${styles.header__menu} ${!menuOpenState ? "_hidden_" : ""}`}>
-        <ProfilePreview />
+        {authenticated && <ProfilePreview />}
 
         {/* for mobile view only */}
         <ul className={styles.header__menu__nav_links}>
@@ -48,7 +52,7 @@ const Menu = (props: propsTypes) => {
         </ul>
 
         <ul className={styles.header__menu__links}>
-          {menuLinks.map((link) => {
+          {authenticated && menuLinks.map((link) => {
             return (
               <li key={link.key}>
                 <Link href={link.href}>{link.name}</Link>
@@ -57,7 +61,11 @@ const Menu = (props: propsTypes) => {
           })}
         </ul>
 
-        <button className={styles.header__menu__logout_btn}>Log out</button>
+        {authenticated ? (
+          <button className={styles.header__menu__logout_btn}>Log out</button>
+        ) : (
+          <Link href="/auth">Login</Link>
+        )}
       </div>
     </>
   );

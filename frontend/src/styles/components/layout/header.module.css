@@ -34,6 +34,12 @@
   outline: 1px solid var(--accent-color);
 }
 
+.header__menu_open_btn {
+  height: 32px;
+  background: var(--primary-color);
+  display: none;
+}
+
 .header__menu {
   position: absolute;
   top: 4px;
@@ -99,6 +105,10 @@
   }
 
   .header__menu__nav_links {
+    display: block;
+  }
+
+  .header__menu_open_btn {
     display: block;
   }
 }
