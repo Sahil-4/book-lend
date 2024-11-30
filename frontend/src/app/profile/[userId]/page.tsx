@@ -20,11 +20,10 @@ const UserProfile = ({ userId }: { userId: string | null }) => {
         <Image src={user.avatar} alt={user.username} fill={true} />
       </div>
 
-      <div className={styles.user_profile__details}>
-        <p>{user.name}</p>
-        <p>{user.username}</p>
-        <p>{user.bio}</p>
-      </div>
+      <p>{user.name}</p>
+      <p>{user.username}</p>
+      <p>{user.bio}</p>
+      {/* <div className={styles.user_profile__details}></div> */}
     </div>
   );
 };

@@ -1,10 +1,9 @@
 .user_profile {
   width: 720px;
-  display: flex;
-  gap: var(--spacing-medium);
-  justify-content: center;
+  display: grid;
   color: var(--primary-color);
   margin: var(--spacing-medium) auto;
+  grid-template-areas: "avatar name" "avatar username" "avatar bio";
 }
 
 .user_profile__avatar_container {
@@ -14,12 +13,26 @@
   border-radius: 50%;
   overflow: hidden;
   border: 1px solid var(--accent-color);
+  grid-area: avatar;
+  margin: 0 var(--spacing-medium);
 }
 
-.user_profile__details {
-  width: 480px;
-}
-
-.user_profile__details > p:nth-child(1) {
+.user_profile > p:nth-child(2) {
+  grid-area: name;
   font-size: var(--font-size-larger);
+}
+
+.user_profile > p:nth-child(3) {
+  grid-area: username;
+}
+
+.user_profile > p:nth-child(4) {
+  grid-area: bio;
+}
+
+@media only screen and (max-width: 426px) {
+  .user_profile {
+    width: 320px;
+    grid-template-areas: "avatar name" "avatar username" "bio bio";
+  }
 }
