@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ProfilePreview from "@/components/layout/profilepreview";
 import styles from "@/styles/components/layout/header.module.css";
 
@@ -24,20 +24,40 @@ const Menu = (props: propsTypes) => {
     { key: "304", name: "Feedback", href: "/feedback" },
   ];
 
+  const menuRef = useRef<HTMLDivElement | null>(null);
   const [menuOpenState, setMenuOpenState] = useState<boolean>(false);
+
+  const closeMenu = () => {
+    setMenuOpenState(false);
+  };
+
+  const openMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    setMenuOpenState(true);
+  };
+
+  useEffect(() => {
+    if (menuOpenState) {
+      window.addEventListener("click", closeMenu);
+    } else {
+      window.removeEventListener("click", closeMenu);
+    }
+
+    return () => window.removeEventListener("click", closeMenu);
+  }, [menuOpenState]);
 
   return (
     <>
       {authenticated ? (
-        <button className={styles.header__profilePreview} onClick={() => setMenuOpenState(true)}>
+        <button className={styles.header__profilePreview} onClick={openMenu}>
           A
         </button>
       ) : (
-        <button className={styles.header__menu_open_btn} onClick={() => setMenuOpenState(true)}>
+        <button className={styles.header__menu_open_btn} onClick={openMenu}>
           Open menu
         </button>
       )}
-      <div className={`${styles.header__menu} ${!menuOpenState ? "_hidden_" : ""}`}>
+      <div className={`${styles.header__menu} ${!menuOpenState ? "_hidden_" : ""}`} ref={menuRef}>
         {authenticated && <ProfilePreview />}
 
         {/* for mobile view only */}
