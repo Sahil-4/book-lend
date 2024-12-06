@@ -26,9 +26,9 @@ router.get("/search", searchBooks);
 
 router.get("/search/:id", getBookById);
 
-router.get("/getAllAuthors", getAllAuthors);
+router.get("/authors", getAllAuthors);
 
-router.get("/getAllGenres", getAllGenres);
+router.get("/genres", getAllGenres);
 
 router.post("/", validateRequest(bookSchema), createBook);
 
