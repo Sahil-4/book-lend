@@ -1,4 +1,10 @@
 import { prisma } from "../prisma/index.js";
+import { User } from "./user.model.js";
+
+enum Status {
+  "Sell",
+  "Rent"
+}
 
 interface Book {
   id: string;
@@ -8,7 +14,8 @@ interface Book {
   genre: string;
   preview: string | null;
   price: number;
-  status: "Sell" | "Rent";
+  status: Status;
+  seller: User;
   sellerId: string;
   createdAt: Date;
   updatedAt: Date;
@@ -75,7 +82,7 @@ export const getAllAuthors = async (): Promise<string[]> => {
     select: { author: true },
   });
 
-  return result.map((book) => book.author);
+  return result.map((book: Book) => book.author);
 };
 
 export const getAllGenres = async (): Promise<string[]> => {
@@ -84,7 +91,7 @@ export const getAllGenres = async (): Promise<string[]> => {
     select: { genre: true },
   });
 
-  return result.map((book) => book.genre);
+  return result.map((book: Book) => book.genre);
 };
 
 export type { Book };
