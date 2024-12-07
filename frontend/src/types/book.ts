@@ -1,3 +1,10 @@
+import { UserT } from "@/types/user";
+
+enum Status {
+  "Sell",
+  "Rent"
+}
+
 type BookT = {
   id: string;
   title: string;
@@ -5,12 +12,14 @@ type BookT = {
   author: string;
   genre: string;
   preview: string | null;
-  rentingPrice: number | null;
-  sellingPrice: number | null;
-  status: string;
+  price: number;
+  status: Status;
+  seller: UserT;
   sellerId: string;
   createdAt: Date;
   updatedAt: Date;
 };
 
-export type { BookT };
+type BookCreate = Omit<BookT, "id" | "seller" | "createdAt" | "updatedAt">;
+
+export type { BookT, BookCreate };

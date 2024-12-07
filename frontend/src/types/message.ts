@@ -6,7 +6,10 @@ type MessageT = {
   senderId: string;
   receiverId: string;
   chatId: string;
-  createdAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
-export type { MessageT };
+type MessageCreate = Omit<MessageT, "id" | "isRead" | "createdAt" | "updatedAt">;
+
+export type { MessageT, MessageCreate };
