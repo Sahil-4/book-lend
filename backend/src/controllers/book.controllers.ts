@@ -69,7 +69,7 @@ const createBook = async (req: Request, res: Response) => {
   try {
     const body = req.body;
 
-    const bookObj: Omit<Book.Book, "id" | "createdAt" | "updatedAt"> = {
+    const bookObj: Omit<Book.Book, "id" | "createdAt" | "updatedAt" | "seller"> = {
       title: body.title,
       description: body.description,
       author: body.author,
