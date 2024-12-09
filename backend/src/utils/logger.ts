@@ -1,5 +1,5 @@
 import { createLogger, format, transports } from "winston";
-const { combine, timestamp, json, colorize } = format;
+const { combine, timestamp, json, colorize, printf } = format;
 
 // morgan configuration - log format
 const morganFormat = ":method :url :status :response-time ms";
@@ -8,36 +8,31 @@ const morganFormat = ":method :url :status :response-time ms";
 const morganOptions = {
   stream: {
     write: (message: string) => {
-      const parts = message.split(" ");
-      const logObject = {
-        method: parts[0],
-        url: parts[1],
-        status: parts[2],
-        responseTime: `${parts[3]} ms`,
-      };
-
-      logger.info(JSON.stringify(logObject));
+      logger.info(message.trim());
     },
   },
 };
 
 // Custom format for console logging with colors
-const consoleLogFormat = format.combine(
-  format.colorize(),
-  format.printf(({ level, message, timestamp }) => {
-    return `${timestamp} : ${level} : ${message}`;
+const consoleLogFormat = combine(
+  colorize(),
+  printf(({ level, message, timestamp }) => {
+    return `${timestamp} : [${level}] : ${message}`;
   }),
 );
 
 // Create a Winston logger
 const logger = createLogger({
   level: "info",
-  format: combine(colorize(), timestamp(), json()),
+  format: combine(timestamp()),
   transports: [
     new transports.Console({
       format: consoleLogFormat,
     }),
-    new transports.File({ filename: "application.log" }),
+    new transports.File({ 
+      filename: "application.log",
+      format: combine(timestamp(), json()),
+     }),
   ],
 });
 
