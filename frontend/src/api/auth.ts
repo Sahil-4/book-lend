@@ -1,5 +1,6 @@
 import API from "@/api";
 import { handleApiError } from "@/utils/api-error";
+import { ResponseType } from "@/types/response";
 import { UserLogin, UserSignup, UserT } from "@/types/user";
 
 export const login = async (user: UserLogin) => {
@@ -13,7 +14,7 @@ export const login = async (user: UserLogin) => {
 
 export const signup = async (user: UserSignup) => {
   try {
-    const response = await API.post("/api/v1/users/login", user);
+    const response = await API.post("/api/v1/users/signup", user);
     return response.data as ResponseType;
   } catch (error) {
     handleApiError(error);
