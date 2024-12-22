@@ -11,8 +11,12 @@ const API = axios.create({
 API.interceptors.request.use((config) => {
   if (typeof window === "undefined") return config;
 
-  const auth_token = localStorage.getItem("__auth_token__");
-  const access_token = localStorage.getItem("__access_token__");
+  if (!localStorage.getItem("user")) return config;
+
+  const user = JSON.parse(localStorage.getItem("user")!);
+
+  const auth_token = user.authToken;
+  const access_token = user.accessToken;
 
   if (!access_token || !auth_token) return config;
 
