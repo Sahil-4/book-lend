@@ -1,6 +1,8 @@
 "use client";
 
-import { Dispatch, FormEvent, SetStateAction, useState } from "react";
+import { Dispatch, FormEvent, SetStateAction, useRef, useState } from "react";
+import { useAppDispatch } from "@/lib/hooks";
+import { login, signup } from "@/lib/features/auth/authSlice";
 import styles from "@/styles/pages/auth.module.css";
 
 const SignupForm = ({
@@ -8,17 +10,45 @@ const SignupForm = ({
 }: {
   setMode: Dispatch<SetStateAction<"login" | "signup" | "verify">>;
 }) => {
+  const username_input_ref = useRef<HTMLInputElement | null>(null);
+  const name_input_ref = useRef<HTMLInputElement | null>(null);
+  const phone_input_ref = useRef<HTMLInputElement | null>(null);
+  const password_input_ref = useRef<HTMLInputElement | null>(null);
+
+  const dispatch = useAppDispatch();
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const name = name_input_ref.current?.value;
+    const phone = phone_input_ref.current?.value;
+    const username = username_input_ref.current?.value;
+    const password = password_input_ref.current?.value;
+
+    if (!name || !phone || !username || !password) return;
+
+    dispatch(signup({ name, phone, username, password, bio: "" }));
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <h3>Create account</h3>
-      <input type="text" name="username" placeholder="Username" />
-      <input type="text" name="name" placeholder="Name" />
-      <input type="text" name="phone" placeholder="Phone" />
-      <input type="text" name="password" placeholder="Password" />
+      <input
+        type="text"
+        name="username"
+        placeholder="Username"
+        required={true}
+        ref={username_input_ref}
+      />
+      <input type="text" name="name" placeholder="Name" required={true} ref={name_input_ref} />
+      <input type="text" name="phone" placeholder="Phone" required={true} ref={phone_input_ref} />
+      <input
+        type="text"
+        name="password"
+        placeholder="Password"
+        required={true}
+        ref={password_input_ref}
+      />
 
       <button>Sign up</button>
       <p>
@@ -33,15 +63,40 @@ const LoginForm = ({
 }: {
   setMode: Dispatch<SetStateAction<"login" | "signup" | "verify">>;
 }) => {
+  const username_input_ref = useRef<HTMLInputElement | null>(null);
+  const password_input_ref = useRef<HTMLInputElement | null>(null);
+
+  const dispatch = useAppDispatch();
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const phone = username_input_ref.current?.value;
+    const username = username_input_ref.current?.value;
+    const password = password_input_ref.current?.value;
+
+    if (!phone || !username || !password) return;
+
+    dispatch(login({ phone, username, password }));
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <h3>Welcome back</h3>
-      <input type="text" placeholder="Username or phone" name="user" />
-      <input type="password" placeholder="Password" name="password" />
+      <input
+        type="text"
+        placeholder="Username or phone"
+        name="user"
+        required={true}
+        ref={username_input_ref}
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        name="password"
+        required={true}
+        ref={password_input_ref}
+      />
 
       <button>Login</button>
       <p>

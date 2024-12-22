@@ -1,9 +1,12 @@
+"use client";
+
 import Link from "next/link";
 import Menu from "@/components/layout/menu";
+import { useAppSelector } from "@/lib/hooks";
 import styles from "@/styles/components/layout/header.module.css";
 
 const Header = () => {
-  const authenticated = true;
+  const authenticated = useAppSelector((state) => state.auth.authenticated);
 
   const navLinks = [
     { key: "101", name: "Home", href: "/" },
@@ -32,7 +35,7 @@ const Header = () => {
             </li>
           )}
         </ul>
-        <Menu authenticated={authenticated} />
+        <Menu />
       </nav>
     </header>
   );

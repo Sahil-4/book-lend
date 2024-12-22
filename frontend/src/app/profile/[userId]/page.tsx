@@ -3,21 +3,19 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { BooksList } from "@/components/common";
+import { useAppSelector } from "@/lib/hooks";
+import { AuthSliceState } from "@/lib/features/auth/authSlice";
+import { UserT } from "@/types/user";
 import styles from "@/styles/pages/user-profile.module.css";
 
-const UserProfile = ({ userId }: { userId: string | null }) => {
-  const user = {
-    id: userId,
-    avatar: "/avatar.png",
-    username: "@some_user123",
-    name: "Some user",
-    bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin eget dolor id nulla luctus euismod. Nulla sit amet ipsum ac lorem mollis placerat. Nunc accumsan tortor sit amet vehicula consequat.",
-  };
+const UserProfile = ({ user }: { user: UserT | null }) => {
+  const defaultAvatar = "/avatar.png";
 
+  if (!user) return;
   return (
     <div className={styles.user_profile}>
       <div className={styles.user_profile__avatar_container}>
-        <Image src={user.avatar} alt={user.username} fill={true} />
+        <Image src={user.avatar ? user.avatar : defaultAvatar} alt={user.username} fill={true} />
       </div>
 
       <p>{user.name}</p>
@@ -30,6 +28,9 @@ const UserProfile = ({ userId }: { userId: string | null }) => {
 
 const Page = ({ params }: { params: Promise<{ userId: string }> }) => {
   const [userId, setUserId] = useState<string | null>(null);
+  const [user, setUser] = useState<UserT | null>(null);
+
+  const authState: AuthSliceState = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     (async () => {
@@ -37,9 +38,14 @@ const Page = ({ params }: { params: Promise<{ userId: string }> }) => {
     })();
   }, [params]);
 
+  useEffect(() => {
+    // !TODO - use `userId` to update user and show profile
+    if (authState.user?.id == userId) setUser(authState.user);
+  }, [authState.user, userId]);
+
   return (
     <section>
-      <UserProfile userId={userId} />
+      <UserProfile user={user} />
       <BooksList books={[]} slugName="Your books" />
     </section>
   );

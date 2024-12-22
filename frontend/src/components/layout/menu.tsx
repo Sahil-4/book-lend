@@ -2,15 +2,17 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { logout } from "@/lib/features/auth/authSlice";
 import ProfilePreview from "@/components/layout/profilepreview";
+import { UserT } from "@/types/user";
 import styles from "@/styles/components/layout/header.module.css";
 
-type propsTypes = {
-  authenticated: boolean;
-};
+const Menu = () => {
+  const authenticated = useAppSelector((state) => state.auth.authenticated);
+  const user: UserT = useAppSelector((state) => state.auth.user);
 
-const Menu = (props: propsTypes) => {
-  const { authenticated } = props;
+  const dispatch = useAppDispatch();
 
   const navLinks = [
     { key: "101", name: "Home", href: "/" },
@@ -50,7 +52,7 @@ const Menu = (props: propsTypes) => {
     <>
       {authenticated ? (
         <button className={styles.header__profilePreview} onClick={openMenu}>
-          A
+          {user.name.charAt(0)}
         </button>
       ) : (
         <button className={styles.header__menu_open_btn} onClick={openMenu}>
@@ -72,17 +74,20 @@ const Menu = (props: propsTypes) => {
         </ul>
 
         <ul className={styles.header__menu__links}>
-          {authenticated && menuLinks.map((link) => {
-            return (
-              <li key={link.key}>
-                <Link href={link.href}>{link.name}</Link>
-              </li>
-            );
-          })}
+          {authenticated &&
+            menuLinks.map((link) => {
+              return (
+                <li key={link.key}>
+                  <Link href={link.href}>{link.name}</Link>
+                </li>
+              );
+            })}
         </ul>
 
         {authenticated ? (
-          <button className={styles.header__menu__logout_btn}>Log out</button>
+          <button className={styles.header__menu__logout_btn} onClick={() => dispatch(logout())}>
+            Log out
+          </button>
         ) : (
           <Link href="/auth">Login</Link>
         )}
