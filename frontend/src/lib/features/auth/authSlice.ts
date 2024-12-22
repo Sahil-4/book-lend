@@ -12,8 +12,8 @@ interface AuthSliceState {
 const initialState: AuthSliceState = {
   error: null,
   loading: false,
-  authenticated: false,
-  user: null,
+  authenticated: localStorage.getItem("user") ? true : false,
+  user: localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!) : null,
 };
 
 const authSlice = createSlice({
@@ -30,6 +30,7 @@ const authSlice = createSlice({
       state.error = null;
       state.user = action.payload ? (action.payload.data as UserT) : null;
       state.authenticated = action.payload !== undefined;
+      localStorage.setItem("user", JSON.stringify(state.user));
     });
 
     builder.addCase(login.rejected, (state, action) => {
@@ -41,6 +42,7 @@ const authSlice = createSlice({
       state.error = null;
       state.user = action.payload ? (action.payload.data as UserT) : null;
       state.authenticated = action.payload !== undefined;
+      localStorage.setItem("user", JSON.stringify(state.user));
     });
 
     builder.addCase(logout.rejected, (state, action) => {
@@ -52,6 +54,7 @@ const authSlice = createSlice({
       state.error = null;
       state.user = null;
       state.authenticated = false;
+      localStorage.removeItem("user");
     });
 
     builder.addCase(getUserProfile.rejected, (state, action) => {
