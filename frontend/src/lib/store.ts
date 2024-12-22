@@ -13,6 +13,9 @@ export const makeStore = () => {
       chatsSlice,
       userSlice,
     ),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+      serializableCheck: false,
+    }),
   });
 };
 
