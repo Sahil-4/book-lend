@@ -22,11 +22,10 @@ export const bookSchema = Joi.object({
   author: Joi.string().required(),
   genre: Joi.string().required(),
   preview: Joi.string().optional(),
-  rentingPrice: Joi.number(),
-  sellingPrice: Joi.number(),
+  price: Joi.number(),
   status: Joi.string().required(),
   sellerId: Joi.string().required(),
-}).or("sellingPrice", "rentingPrice");
+});
 
 export const bookSchemaUpdate = Joi.object({
   title: Joi.string().allow(null, ""),
@@ -34,8 +33,7 @@ export const bookSchemaUpdate = Joi.object({
   author: Joi.string().allow(null, ""),
   genre: Joi.string().allow(null, ""),
   preview: Joi.string().allow(null, ""),
-  rentingPrice: Joi.number().allow(null, ""),
-  sellingPrice: Joi.number().allow(null, ""),
+  price: Joi.number().allow(null, ""),
   status: Joi.string().allow(null, ""),
   sellerId: Joi.string().allow(null, ""),
 });
