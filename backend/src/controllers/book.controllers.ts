@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { APIResponse } from "../utils/APIResponse.js";
+import { uploadToCloudinary } from "../services/cloudinary.js";
 import logger from "../utils/logger.js";
 import * as Book from "../models/book.model.js";
 
@@ -68,16 +69,21 @@ const searchBooks = async (req: Request, res: Response) => {
 const createBook = async (req: Request, res: Response) => {
   try {
     const body = req.body;
+    const files: any = { ...req.files };
+
+    const coverImageURL = await uploadToCloudinary(files?.cover[0].path, "cover");
+    const previewFileURL = await uploadToCloudinary(files?.preview[0].path, "preview");
 
     const bookObj: Omit<Book.Book, "id" | "createdAt" | "updatedAt" | "seller"> = {
       title: body.title,
       description: body.description,
       author: body.author,
       genre: body.genre,
-      preview: body.preview,
-      price: body.price,
-      status: body.status,
-      sellerId: body.sellerId,
+      cover: coverImageURL,
+      preview: previewFileURL,
+      price: parseFloat(body.price),
+      status: body.status === "Sell" ? "Sell" : "Rent",
+      sellerId: req.user_id,
     };
 
     const book = await Book.createBook(bookObj);

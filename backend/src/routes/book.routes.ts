@@ -13,6 +13,7 @@ import {
 import { validateRequest } from "../middlewares/validateRequest.js";
 import { bookSchema, bookSchemaUpdate } from "../schema/validationSchema.js";
 import { authenticate } from "../middlewares/authenticate.js";
+import { multerFileUpload } from "../middlewares/multer.js";
 
 const router = Router();
 
@@ -30,7 +31,15 @@ router.get("/authors", getAllAuthors);
 
 router.get("/genres", getAllGenres);
 
-router.post("/", validateRequest(bookSchema), createBook);
+router.post(
+  "/",
+  multerFileUpload.fields([
+    { name: "cover", maxCount: 1 },
+    { name: "preview", maxCount: 1 },
+  ]),
+  validateRequest(bookSchema),
+  createBook,
+);
 
 router.put("/:id", validateRequest(bookSchemaUpdate), updateBook);
 
