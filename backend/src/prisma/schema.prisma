@@ -37,6 +37,7 @@ model Book {
   description  String
   author       String
   genre        String
+  cover      String?
   preview      String?
   price Float
   status       Status

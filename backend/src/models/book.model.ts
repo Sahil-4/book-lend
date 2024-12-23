@@ -9,6 +9,7 @@ interface Book {
   description: string;
   author: string;
   genre: string;
+  cover: string | null;
   preview: string | null;
   price: number;
   status: Status;
