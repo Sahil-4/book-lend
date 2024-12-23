@@ -1,5 +1,6 @@
+import { unlinkSync } from "fs";
 import { v2 as cloudinary } from "cloudinary";
-import logger from "../utils/logger";
+import logger from "../utils/logger.js";
 
 export const uploadToCloudinary = async (filePath: string, folder: string) => {
   try {
@@ -17,6 +18,8 @@ export const uploadToCloudinary = async (filePath: string, folder: string) => {
     return result.url;
   } catch (error: any) {
     logger.error(error.message);
-    return new Error("failed to upload file");
+    throw new Error("failed to upload file");
+  } finally {
+    unlinkSync(filePath);
   }
 };
