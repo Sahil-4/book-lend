@@ -21,10 +21,10 @@ export const bookSchema = Joi.object({
   description: Joi.string().required(),
   author: Joi.string().required(),
   genre: Joi.string().required(),
-  preview: Joi.string().optional(),
+  cover: Joi.any(),
+  preview: Joi.any(),
   price: Joi.number(),
   status: Joi.string().required(),
-  sellerId: Joi.string().required(),
 });
 
 export const bookSchemaUpdate = Joi.object({
@@ -32,10 +32,8 @@ export const bookSchemaUpdate = Joi.object({
   description: Joi.string().allow(null, ""),
   author: Joi.string().allow(null, ""),
   genre: Joi.string().allow(null, ""),
-  preview: Joi.string().allow(null, ""),
   price: Joi.number().allow(null, ""),
   status: Joi.string().allow(null, ""),
-  sellerId: Joi.string().allow(null, ""),
 });
 
 // Message Validation Schema
