@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import * as booksAPI from "@/api/book";
-import { BookCreate, BookT } from "@/types/book";
+import { BookT } from "@/types/book";
 
 interface BooksSliceState {
   error: unknown;
@@ -167,7 +167,7 @@ export const searchBooks = createAsyncThunk("books/search", async (query: string
   return await booksAPI.searchBooks(query);
 });
 
-export const createBook = createAsyncThunk("books/create", async (book: BookCreate) => {
+export const createBook = createAsyncThunk("books/create", async (book: FormData) => {
   return await booksAPI.createBook(book);
 });
 

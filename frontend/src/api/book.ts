@@ -1,7 +1,7 @@
 import API from "@/api/";
 import { handleApiError } from "@/utils/api-error";
 import { ResponseType } from "@/types/response";
-import { BookCreate, BookT } from "@/types/book";
+import { BookT } from "@/types/book";
 
 export const getMyBooks = async () => {
   try {
@@ -57,8 +57,13 @@ export const getAllGenres = async () => {
   }
 };
 
-export const createBook = async (book: BookCreate) => {
+export const createBook = async (book: FormData) => {
   try {
+    API.interceptors.request.use((config) => {
+      config.headers["Content-Type"] = "application/form-data";
+      return config;
+    });
+
     const response = await API.post("/api/v1/books", book);
     return response.data as ResponseType;
   } catch (error) {
