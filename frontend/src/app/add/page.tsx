@@ -1,12 +1,19 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { FormEvent } from "react";
+import { useAppDispatch } from "@/lib/hooks";
+import { createBook } from "@/lib/features/books/booksSlice";
 import styles from "@/styles/components/sections/add-book-form.module.css";
 
 const Form = () => {
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+
   const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(e.target);
+    dispatch(createBook(new FormData(e.target as HTMLFormElement)));
+    router.push("/browse");
   };
 
   return (
@@ -15,7 +22,7 @@ const Form = () => {
         <input type="file" name="cover" id="cover" />
         <label htmlFor="cover">Thumbnail</label>
 
-        <select name="sell_or_rent" id="sell_or_rent">
+        <select name="status" id="status">
           <option value="default">Sell or rent ?</option>
           <option value="Sell">Sell</option>
           <option value="Rent">Rent</option>
