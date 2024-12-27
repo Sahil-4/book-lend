@@ -1,14 +1,18 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { enableMapSet } from "immer";
 import * as booksAPI from "@/api/book";
 import { BookT } from "@/types/book";
+
+enableMapSet();
 
 interface BooksSliceState {
   error: unknown;
   loading: boolean;
-  books: Set<BookT>;
-  results: Set<BookT>;
-  myBooks: Set<BookT>;
+  books: BookT[];
+  results: BookT[];
+  myBooks: BookT[];
   booksMap: Map<string, BookT>;
+  myBooksMap: Map<string, BookT>;
   authors: Set<string>;
   genres: Set<string>;
 }
@@ -16,9 +20,10 @@ interface BooksSliceState {
 const initialState: BooksSliceState = {
   error: null,
   loading: false,
-  books: new Set(),
-  results: new Set(),
-  myBooks: new Set(),
+  books: [],
+  results: [],
+  myBooks: [],
+  myBooksMap: new Map(),
   booksMap: new Map(),
   authors: new Set(),
   genres: new Set(),
@@ -36,8 +41,9 @@ const booksSlice = createSlice({
     builder.addCase(getAllBooks.fulfilled, (state, action) => {
       state.loading = false;
       state.error = null;
-      (action.payload?.data as BookT[]).forEach((book) => state.books.add(book));
-      state.results = new Set(action.payload?.data as BookT[]);
+      (action.payload?.data as BookT[]).forEach((book) => state.booksMap.set(book.id, book));
+      state.results = action.payload?.data as BookT[];
+      state.books = Array.from(state.booksMap.values());
     });
     builder.addCase(getAllAuthors.rejected, (state, action) => {
       state.loading = false;
@@ -74,7 +80,8 @@ const booksSlice = createSlice({
     builder.addCase(getMyBooks.fulfilled, (state, action) => {
       state.loading = false;
       state.error = null;
-      (action.payload?.data as BookT[]).forEach((book) => state.myBooks.add(book));
+      (action.payload?.data as BookT[]).forEach((book) => state.myBooksMap.set(book.id, book));
+      state.myBooks = Array.from(state.myBooksMap.values());
     });
     builder.addCase(searchBooks.rejected, (state, action) => {
       state.loading = false;
@@ -83,10 +90,9 @@ const booksSlice = createSlice({
     builder.addCase(searchBooks.fulfilled, (state, action) => {
       state.loading = false;
       state.error = null;
-      const book: BookT = action.payload?.data as BookT;
-      state.books.add(book);
-      state.results.add(book);
-      state.booksMap.set(book.id, book);
+      const books: BookT[] = action.payload?.data as BookT[];
+      state.results = books;
+      books.forEach((book) => state.booksMap.set(book.id, book));
     });
     builder.addCase(createBook.rejected, (state, action) => {
       state.loading = false;
@@ -96,10 +102,11 @@ const booksSlice = createSlice({
       state.loading = false;
       state.error = null;
       const book: BookT = action.payload?.data as BookT;
-      state.books.add(book);
-      state.results.add(book);
-      state.myBooks.add(book);
+      state.books.push(book);
+      state.results.push(book);
+      state.myBooks.push(book);
       state.booksMap.set(book.id, book);
+      state.myBooksMap.set(book.id, book);
     });
     builder.addCase(updateBook.rejected, (state, action) => {
       state.loading = false;
@@ -110,14 +117,9 @@ const booksSlice = createSlice({
       state.error = null;
       const book: BookT = action.payload?.data as BookT;
       state.booksMap.set(book.id, book);
-      state.books.forEach((book) => {
-        if (book.id === action.meta.arg.id) state.books.delete(book);
-      });
-      state.myBooks.forEach((book) => {
-        if (book.id === action.meta.arg.id) state.myBooks.delete(book);
-      });
-      state.books.add(book);
-      state.myBooks.add(book);
+      state.myBooksMap.set(book.id, book);
+      state.books = Array.from(state.booksMap.values());
+      state.myBooks = Array.from(state.myBooksMap.values());
     });
     builder.addCase(deleteBook.rejected, (state, action) => {
       state.loading = false;
@@ -127,12 +129,9 @@ const booksSlice = createSlice({
       state.loading = false;
       state.error = null;
       state.booksMap.delete(action.meta.arg);
-      state.books.forEach((book) => {
-        if (book.id === action.meta.arg) state.books.delete(book);
-      });
-      state.myBooks.forEach((book) => {
-        if (book.id === action.meta.arg) state.myBooks.delete(book);
-      });
+      state.myBooksMap.delete(action.meta.arg);
+      state.books = Array.from(state.booksMap.values());
+      state.myBooks = Array.from(state.myBooksMap.values());
     });
     builder.addMatcher(
       (action) => action.type.endsWith("/pending"),
