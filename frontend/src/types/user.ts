@@ -6,6 +6,7 @@ interface UserT {
   phone: string;
   bio: string | null;
   accessToken: string | null;
+  authToken: string | null;
   password: string;
   createdAt: Date;
   updatedAt: Date;
