@@ -57,6 +57,18 @@ const authSlice = createSlice({
       localStorage.removeItem("user");
     });
 
+    builder.addCase(issueAuthToken.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message;
+    });
+    builder.addCase(issueAuthToken.fulfilled, (state, action) => {
+      state.loading = false;
+      state.error = null;
+      state.user = action.payload ? (action.payload.data as UserT) : null;
+      state.authenticated = action.payload !== undefined;
+      localStorage.setItem("user", JSON.stringify(state.user));
+    });
+
     builder.addCase(getUserProfile.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error.message;
@@ -98,6 +110,10 @@ export const login = createAsyncThunk("auth/login", async (user: UserLogin) => {
 
 export const logout = createAsyncThunk("auth/logout", async () => {
   return await authAPI.logout();
+});
+
+export const issueAuthToken = createAsyncThunk("auth/authtoken", async () => {
+  return await authAPI.issueAuthToken();
 });
 
 export const getUserProfile = createAsyncThunk("auth/profile", async () => {
