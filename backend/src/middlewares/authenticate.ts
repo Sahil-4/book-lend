@@ -100,3 +100,38 @@ export const authenticateIO = async (socket: Socket, next: (err?: ExtendedError)
     return next(new Error("failed to authenticate"));
   }
 };
+
+export const verifyAccessToken = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const __access_token__ =
+      req.cookies?.__access_token__ || req.header("__access_token__")?.replace("Bearer ", "");
+
+    if (!__access_token__) {
+      return res.status(401).send(new APIResponse(401, null, "invalid access token"));
+    }
+
+    // verify tokens
+    const accessRes = verifyToken(__access_token__);
+
+    if (accessRes === "0") {
+      return res.status(401).send(new APIResponse(401, null, "token expired"));
+    }
+
+    if (accessRes === "-1") {
+      return res.status(401).send(new APIResponse(401, null, "invalid access token"));
+    }
+
+    const user = await User.getUserById(accessRes);
+
+    if (!user) {
+      return res.status(401).send(new APIResponse(401, null, "user not found"));
+    }
+
+    req.user_id = user.id;
+
+    next();
+  } catch (error: any) {
+    logger.error(error.message);
+    res.status(401).send(new APIResponse(401, null, "failed to authenticate"));
+  }
+};
