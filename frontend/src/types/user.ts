@@ -18,4 +18,11 @@ type UserSignup = Pick<UserT, "username" | "name" | "phone" | "bio" | "password"
 
 type UserProfile = Omit<UserT, "password">;
 
-export type { UserT, UserLogin, UserSignup, UserProfile };
+type JWTDecoded = {
+  exp: number;
+  iat: number;
+  id: string;
+  username: string;
+};
+
+export type { UserT, UserLogin, UserSignup, UserProfile, JWTDecoded };
