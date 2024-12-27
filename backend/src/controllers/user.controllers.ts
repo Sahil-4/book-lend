@@ -154,6 +154,39 @@ const logout = async (req: Request, res: Response) => {
   }
 };
 
+const issueAuthToken = async (req: Request, res: Response) => {
+  try {
+    const user_id = req.user_id;
+
+    const user = await User.getUserById(user_id);
+
+    if (!user) return res.status(404).send(new APIResponse(404, null, "user not found"));
+
+    const __auth_token__ = User.__generateAuthToken__(user);
+
+    const __cookie_options__ = {
+      httpOnly: true,
+      secure: true,
+    };
+
+    res.cookie("__auth_token__", __auth_token__, {
+      ...__cookie_options__,
+      expires: new Date(Date.now() + 3600000),
+    });
+
+    const data = {
+      ...user,
+      password: null,
+      authToken: __auth_token__,
+    };
+
+    res.status(200).send(new APIResponse(200, data, "auth token updated"));
+  } catch (error: any) {
+    logger.error(error.message);
+    res.status(501).send(new APIResponse(501, null, "failed to update auth token"));
+  }
+};
+
 const getUserProfile = async (req: Request, res: Response) => {
   try {
     const id = req.user_id;
@@ -204,6 +237,7 @@ export {
   login,
   signup,
   logout,
+  issueAuthToken,
   getUserProfile,
   updateUserProfile,
   deleteUser,

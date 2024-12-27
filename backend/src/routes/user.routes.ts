@@ -3,6 +3,7 @@ import {
   login,
   signup,
   logout,
+  issueAuthToken,
   getAllUsers,
   getUserById,
   getUserProfile,
@@ -11,7 +12,7 @@ import {
 } from "../controllers/user.controllers.js";
 import { userLoginSchema, userSignupSchema } from "../schema/validationSchema.js";
 import { validateRequest } from "../middlewares/validateRequest.js";
-import { authenticate } from "../middlewares/authenticate.js";
+import { authenticate, verifyAccessToken } from "../middlewares/authenticate.js";
 
 const router = Router();
 
@@ -24,6 +25,8 @@ router.post("/signup", validateRequest(userSignupSchema), signup);
 router.post("/login", validateRequest(userLoginSchema), login);
 
 router.get("/logout", authenticate, logout);
+
+router.get("/authtoken", verifyAccessToken, issueAuthToken);
 
 router.get("/profile", authenticate, getUserProfile);
 
