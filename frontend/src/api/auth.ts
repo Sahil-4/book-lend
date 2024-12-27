@@ -30,6 +30,15 @@ export const logout = async () => {
   }
 };
 
+export const issueAuthToken = async () => {
+  try {
+    const response = await API.get("/api/v1/users/authtoken");
+    return response.data as ResponseType;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+
 export const getUserProfile = async () => {
   try {
     const response = await API.get("/api/v1/users/profile");
