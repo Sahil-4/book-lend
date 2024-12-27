@@ -23,7 +23,7 @@ export const getAllBooks = async () => {
 
 export const searchBooks = async (query: string) => {
   try {
-    const response = await API.get(`/api/v1/books/search${query}`);
+    const response = await API.get(`/api/v1/books/search?${query}`);
     return response.data as ResponseType;
   } catch (error) {
     handleApiError(error);
@@ -32,7 +32,7 @@ export const searchBooks = async (query: string) => {
 
 export const getBookById = async (id: string) => {
   try {
-    const response = await API.get(`/api/v1/books/search${id}`);
+    const response = await API.get(`/api/v1/books/search/${id}`);
     return response.data as ResponseType;
   } catch (error) {
     handleApiError(error);
