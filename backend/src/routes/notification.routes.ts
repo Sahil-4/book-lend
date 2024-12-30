@@ -7,11 +7,11 @@ import {
 } from "../controllers/notification.controllers.js";
 import { validateRequest } from "../middlewares/validateRequest.js";
 import { notificationSchema } from "../schema/validationSchema.js";
-import { authenticate } from "../middlewares/authenticate.js";
+import { verifyAccessTokenHttp } from "../middlewares/authenticate.js";
 
 const router = Router();
 
-router.use(authenticate);
+router.use(verifyAccessTokenHttp);
 
 router.get("/", getAllNotifications);
 

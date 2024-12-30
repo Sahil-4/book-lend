@@ -12,12 +12,12 @@ import {
 } from "../controllers/book.controllers.js";
 import { validateRequest } from "../middlewares/validateRequest.js";
 import { bookSchema, bookSchemaUpdate } from "../schema/validationSchema.js";
-import { authenticate } from "../middlewares/authenticate.js";
+import { verifyAccessTokenHttp } from "../middlewares/authenticate.js";
 import { multerFileUpload } from "../middlewares/multer.js";
 
 const router = Router();
 
-router.use(authenticate);
+router.use(verifyAccessTokenHttp);
 
 router.get("/", getSellersBooks);
 

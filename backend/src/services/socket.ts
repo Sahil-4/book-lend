@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
 import { Server as HttpServer } from "http";
-import { authenticateIO } from "../middlewares/authenticate.js";
+import { verifyAccessTokenSocket } from "../middlewares/authenticate.js";
 import redis from "./redis.js";
 
 let io: Server | null = null;
@@ -13,7 +13,7 @@ const initiateSocketIO = (httpServer: HttpServer) => {
   });
 
   // authentication
-  io.use(authenticateIO);
+  io.use(verifyAccessTokenSocket);
 
   // handle session
   io.on("connection", async (socket) => {

@@ -3,7 +3,7 @@ import {
   login,
   signup,
   logout,
-  issueAuthToken,
+  issueAccessToken,
   getAllUsers,
   getUserById,
   getUserProfile,
@@ -12,26 +12,26 @@ import {
 } from "../controllers/user.controllers.js";
 import { userLoginSchema, userSignupSchema } from "../schema/validationSchema.js";
 import { validateRequest } from "../middlewares/validateRequest.js";
-import { authenticate, verifyAccessToken } from "../middlewares/authenticate.js";
+import { verifyAccessTokenHttp, verifyRefreshTokenHttp } from "../middlewares/authenticate.js";
 
 const router = Router();
 
-router.get("/", authenticate, getAllUsers);
+router.get("/", verifyAccessTokenHttp, getAllUsers);
 
-router.get("/user/:id", authenticate, getUserById);
+router.get("/user/:id", verifyAccessTokenHttp, getUserById);
 
 router.post("/signup", validateRequest(userSignupSchema), signup);
 
 router.post("/login", validateRequest(userLoginSchema), login);
 
-router.get("/logout", authenticate, logout);
+router.get("/logout", logout);
 
-router.get("/authtoken", verifyAccessToken, issueAuthToken);
+router.get("/authtoken", verifyRefreshTokenHttp, issueAccessToken);
 
-router.get("/profile", authenticate, getUserProfile);
+router.get("/profile", verifyAccessTokenHttp, getUserProfile);
 
-router.put("/profile", authenticate, updateUserProfile);
+router.put("/profile", verifyAccessTokenHttp, updateUserProfile);
 
-router.delete("/profile", authenticate, deleteUser);
+router.delete("/profile", verifyAccessTokenHttp, verifyRefreshTokenHttp, deleteUser);
 
 export default router;

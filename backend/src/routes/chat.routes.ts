@@ -7,20 +7,22 @@ import {
   createChat,
   deleteChat,
 } from "../controllers/chat.controllers.js";
-import { authenticate } from "../middlewares/authenticate.js";
+import { verifyAccessTokenHttp } from "../middlewares/authenticate.js";
 
 const router = Router();
 
-router.get("/", authenticate, getAllChats);
+router.use(verifyAccessTokenHttp);
 
-router.get("/:id", authenticate, getChat);
+router.get("/", getAllChats);
 
-router.post("/", authenticate, createChat);
+router.get("/:id", getChat);
 
-router.post("/message/:id", authenticate, addChatMessage);
+router.post("/", createChat);
 
-router.delete("/message/:id", authenticate, deleteChatMessage);
+router.post("/message/:id", addChatMessage);
 
-router.delete("/:id", authenticate, deleteChat);
+router.delete("/message/:id", deleteChatMessage);
+
+router.delete("/:id", deleteChat);
 
 export default router;
