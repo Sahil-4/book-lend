@@ -5,7 +5,7 @@ const prisma = new PrismaClient({
     user: {
       phone: true,
       password: true,
-      accessToken: true,
+      refreshToken: true,
       updatedAt: true,
     },
   },

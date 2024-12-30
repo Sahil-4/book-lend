@@ -16,7 +16,7 @@ model User {
   phone            String
   bio              String?
   password         String
-  accessToken      String?
+  refreshToken      String?
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
   books            Book[]
