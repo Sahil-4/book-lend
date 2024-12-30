@@ -186,10 +186,14 @@ const issueAccessToken = async (req: Request, res: Response) => {
       expires: new Date(Date.now() + 3600000),
     });
 
+    const __refresh_token__ =
+      req.cookies?.__refresh_token__ || req.header("__refresh_token__")?.replace("Bearer ", "");
+
     const data = {
       ...user,
       password: null,
       accessToken: __access_token__,
+      refreshToken: __refresh_token__,
     };
 
     res.status(200).send(new APIResponse(200, data, "auth token updated"));
