@@ -92,21 +92,17 @@ export const __hashPassword__ = async (password: string): Promise<string> => {
 export const __generateAccessToken__ = (user: Omit<User, "password" | "refreshToken">) => {
   const __payload__ = { id: user.id, username: user.username };
   const __JWT_SECRET__ = String(process.env.JWT_SECRET);
-  // !TODO - remove this - temporary change 
-  // const __options__ = { expiresIn: "1h" };
-  const __options__ = { expiresIn: 10 };
-  
+  const __options__ = { expiresIn: "1h" };
+
   const __access_token__ = jwt.sign(__payload__, __JWT_SECRET__, __options__);
-  
+
   return __access_token__;
 };
 
 export const __generateRefreshToken__ = async (user: Omit<User, "password" | "refreshToken">) => {
   const __payload__ = { id: user.id, username: user.username };
   const __JWT_SECRET__ = String(process.env.JWT_SECRET);
-  // !TODO - remove this - temporary change 
-  // const __options__ = { expiresIn: "3h" };
-  const __options__ = { expiresIn: 30 };
+  const __options__ = { expiresIn: "3h" };
 
   const __refresh_token__ = jwt.sign(__payload__, __JWT_SECRET__, __options__);
 
