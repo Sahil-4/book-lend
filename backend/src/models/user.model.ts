@@ -9,21 +9,21 @@ interface User {
   name: string;
   phone: string;
   bio: string | null;
-  accessToken: string | null;
+  refreshToken: string | null;
   password: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
 export const getAllUsers = async (): Promise<
-  Omit<User, "password" | "updatedAt" | "phone" | "accessToken">[]
+  Omit<User, "password" | "updatedAt" | "phone" | "refreshToken">[]
 > => {
   return await prisma.user.findMany();
 };
 
 export const getUserById = async (
   id: string,
-): Promise<Omit<User, "password" | "accessToken"> | null> => {
+): Promise<Omit<User, "password" | "refreshToken"> | null> => {
   return await prisma.user.findUnique({
     where: { id },
     omit: {
@@ -35,7 +35,7 @@ export const getUserById = async (
 
 export const createUser = async (
   user: Omit<User, "id" | "createdAt" | "updatedAt">,
-): Promise<Omit<User, "password" | "accessToken"> | null> => {
+): Promise<Omit<User, "password" | "refreshToken"> | null> => {
   return await prisma.user.create({
     data: { ...user },
     omit: {
@@ -56,7 +56,7 @@ export const getUserByUsernameORPhone = async (
       OR: [{ username: username }, { phone: phone }],
     },
     omit: {
-      accessToken: false,
+      refreshToken: false,
       phone: false,
       updatedAt: false,
     },
@@ -66,7 +66,7 @@ export const getUserByUsernameORPhone = async (
 export const updateUser = async (
   id: string,
   user: Partial<Omit<User, "id" | "password" | "createdAt" | "updatedAt">>,
-): Promise<Omit<User, "password" | "accessToken"> | null> => {
+): Promise<Omit<User, "password" | "refreshToken"> | null> => {
   return await prisma.user.update({
     where: { id },
     data: { ...user },
@@ -89,39 +89,55 @@ export const __hashPassword__ = async (password: string): Promise<string> => {
   return hashed_password;
 };
 
-export const __generateAuthToken__ = (user: Omit<User, "password" | "accessToken">) => {
+export const __generateAccessToken__ = (user: Omit<User, "password" | "refreshToken">) => {
   const __payload__ = { id: user.id, username: user.username };
   const __JWT_SECRET__ = String(process.env.JWT_SECRET);
-  const __options__ = { expiresIn: "1h" };
-
-  const __auth_token__ = jwt.sign(__payload__, __JWT_SECRET__, __options__);
-
-  return __auth_token__;
-};
-
-export const __generateAccessToken__ = async (user: Omit<User, "password" | "accessToken">) => {
-  const __payload__ = { id: user.id, username: user.username };
-  const __JWT_SECRET__ = String(process.env.JWT_SECRET);
-  const __options__ = { expiresIn: "3h" };
-
+  // !TODO - remove this - temporary change 
+  // const __options__ = { expiresIn: "1h" };
+  const __options__ = { expiresIn: 10 };
+  
   const __access_token__ = jwt.sign(__payload__, __JWT_SECRET__, __options__);
-
-  await updateUser(user.id, { accessToken: __access_token__ });
-
+  
   return __access_token__;
 };
 
-export const __generateAuthAndAccessToken__ = async (
-  user: Omit<User, "password" | "accessToken">,
-) => {
-  const __auth_token__ = __generateAuthToken__(user);
-  const __access_token__ = await __generateAccessToken__(user);
+export const __generateRefreshToken__ = async (user: Omit<User, "password" | "refreshToken">) => {
+  const __payload__ = { id: user.id, username: user.username };
+  const __JWT_SECRET__ = String(process.env.JWT_SECRET);
+  // !TODO - remove this - temporary change 
+  // const __options__ = { expiresIn: "3h" };
+  const __options__ = { expiresIn: 30 };
 
-  return { __auth_token__, __access_token__ };
+  const __refresh_token__ = jwt.sign(__payload__, __JWT_SECRET__, __options__);
+
+  await updateUser(user.id, { refreshToken: __refresh_token__ });
+
+  return __refresh_token__;
+};
+
+export const __generateAuthAndAccessToken__ = async (
+  user: Omit<User, "password" | "refreshToken">,
+) => {
+  const __access_token__ = __generateAccessToken__(user);
+  const __refresh_token__ = await __generateRefreshToken__(user);
+
+  return { __access_token__, __refresh_token__ };
 };
 
 export const __matchUserPassword__ = async (iPassword: string, uPassword: string) => {
   return await bcrypt.compare(iPassword, uPassword);
+};
+
+export const __getUser__ = async (id: string) => {
+  return await prisma.user.findFirst({
+    where: { id },
+    omit: {
+      password: false,
+      phone: false,
+      updatedAt: false,
+      refreshToken: false,
+    },
+  });
 };
 
 export const __getUserByUsernameORPhone__ = async (
@@ -136,7 +152,7 @@ export const __getUserByUsernameORPhone__ = async (
       password: false,
       phone: false,
       updatedAt: false,
-      accessToken: false,
+      refreshToken: false,
     },
   });
 };
