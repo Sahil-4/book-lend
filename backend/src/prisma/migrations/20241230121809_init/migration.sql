@@ -10,7 +10,7 @@ CREATE TABLE "User" (
     "phone" TEXT NOT NULL,
     "bio" TEXT,
     "password" TEXT NOT NULL,
-    "accessToken" TEXT,
+    "refreshToken" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -24,6 +24,7 @@ CREATE TABLE "Book" (
     "description" TEXT NOT NULL,
     "author" TEXT NOT NULL,
     "genre" TEXT NOT NULL,
+    "cover" TEXT,
     "preview" TEXT,
     "price" DOUBLE PRECISION NOT NULL,
     "status" "Status" NOT NULL,
@@ -73,14 +74,13 @@ CREATE TABLE "Message" (
 -- CreateTable
 CREATE TABLE "_ChatParticipants" (
     "A" TEXT NOT NULL,
-    "B" TEXT NOT NULL
+    "B" TEXT NOT NULL,
+
+    CONSTRAINT "_ChatParticipants_AB_pkey" PRIMARY KEY ("A","B")
 );
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
-
--- CreateIndex
-CREATE UNIQUE INDEX "_ChatParticipants_AB_unique" ON "_ChatParticipants"("A", "B");
 
 -- CreateIndex
 CREATE INDEX "_ChatParticipants_B_index" ON "_ChatParticipants"("B");
