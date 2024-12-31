@@ -19,7 +19,7 @@ const SearchBox = () => {
     const authorInput = form[2] as HTMLSelectElement;
     const genreInput = form[3] as HTMLSelectElement;
 
-    if (!titleInput.value || !authorInput.value || !genreInput.value) return;
+    if (!titleInput.value && !authorInput.value && !genreInput.value) return;
 
     const params = new URLSearchParams();
 

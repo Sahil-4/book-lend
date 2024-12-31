@@ -10,9 +10,19 @@ const Form = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
+  const validateFormData = (form: FormData): boolean => {
+    for (const [, v] of form.entries()) {
+      if (v === "") return false;
+      if (v instanceof File && v.name === "") return false;
+    }
+    return true;
+  };
+
   const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(createBook(new FormData(e.target as HTMLFormElement)));
+    const form = new FormData(e.target as HTMLFormElement);
+    if (!validateFormData(form)) return alert("All feilds are required");
+    dispatch(createBook(form));
     router.push("/browse");
   };
 
@@ -23,7 +33,6 @@ const Form = () => {
         <label htmlFor="cover">Thumbnail</label>
 
         <select name="status" id="status">
-          <option value="default">Sell or rent ?</option>
           <option value="Sell">Sell</option>
           <option value="Rent">Rent</option>
         </select>
