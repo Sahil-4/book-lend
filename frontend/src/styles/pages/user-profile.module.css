@@ -3,7 +3,7 @@
   display: grid;
   color: var(--primary-color);
   margin: var(--spacing-medium) auto;
-  grid-template-areas: "avatar name" "avatar username" "avatar bio";
+  grid-template-areas: "avatar name name" "avatar username username" "avatar bio bio" "avatar bio bio" "avatar bio bio" "avatar bio bio";
 }
 
 .user_profile__avatar_container {
@@ -13,8 +13,23 @@
   border-radius: 50%;
   overflow: hidden;
   border: 1px solid var(--accent-color);
-  grid-area: avatar;
   margin: 0 var(--spacing-medium);
+}
+
+.user_profile > div:nth-child(1) {
+  grid-area: avatar;
+}
+
+.user_profile > div:nth-child(1) > a {
+  width: 180px;
+  height: 32px;
+  color: var(--primary-color);
+  background: var(--secondary-color);
+  font-size: var(--font-size-large);
+  display: block;
+  text-align: center;
+  outline: 1px solid var(--accent-color);
+  margin: var(--spacing-small) 0;
 }
 
 .user_profile > p:nth-child(2) {

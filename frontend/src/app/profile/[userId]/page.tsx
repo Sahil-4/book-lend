@@ -2,26 +2,29 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { BooksList } from "@/components/common";
 import { useAppSelector } from "@/lib/hooks";
 import { AuthSliceState } from "@/lib/features/auth/authSlice";
 import { UserT } from "@/types/user";
 import styles from "@/styles/pages/user-profile.module.css";
 
-const UserProfile = ({ user }: { user: UserT | null }) => {
+const UserProfile = ({ user, flag }: { user: UserT | null; flag: boolean }) => {
   const defaultAvatar = "/avatar.png";
 
   if (!user) return;
   return (
     <div className={styles.user_profile}>
-      <div className={styles.user_profile__avatar_container}>
-        <Image src={user.avatar ? user.avatar : defaultAvatar} alt={user.username} fill={true} />
+      <div>
+        <div className={styles.user_profile__avatar_container}>
+          <Image src={user.avatar ? user.avatar : defaultAvatar} alt={user.username} fill={true} />
+        </div>
+        {flag && <Link href={"/profile/edit"}>Edit</Link>}
       </div>
 
       <p>{user.name}</p>
       <p>{user.username}</p>
       <p>{user.bio}</p>
-      {/* <div className={styles.user_profile__details}></div> */}
     </div>
   );
 };
@@ -45,7 +48,7 @@ const Page = ({ params }: { params: Promise<{ userId: string }> }) => {
 
   return (
     <section>
-      <UserProfile user={user} />
+      <UserProfile user={user} flag={authState.user?.id === userId} />
       <BooksList books={[]} slugName="Your books" />
     </section>
   );
