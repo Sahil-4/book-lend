@@ -1,0 +1,54 @@
+.edit_profile_form_container {
+  width: 620px;
+  margin: var(--spacing-medium) auto;
+}
+
+.edit_profile_form {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+}
+
+.edit_profile_form_left {
+  height: 240px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid var(--accent-color);
+  margin: 0 var(--spacing-medium);
+}
+
+.edit_profile_form_left > input {
+  display: none;
+}
+
+.edit_profile_form_right > input,
+.edit_profile_form_right > textarea {
+  width: 320px;
+  height: 28px;
+  color: var(--accent-color);
+  background: var(--secondary-color);
+  display: block;
+  margin: var(--spacing-small) 0;
+  font-size: var(--font-size-large);
+  border: 1px solid var(--accent-color);
+  outline: none;
+}
+
+.edit_profile_form_right > input::placeholder,
+.edit_profile_form_right > textarea::placeholder {
+  color: var(--accent-color);
+}
+
+.edit_profile_form_right > textarea {
+  height: 120px;
+}
+
+.edit_profile_form > button {
+  height: 42px;
+  width: 158px;
+  font-size: var(--font-size-large);
+  font-weight: var(--font-weight-bold);
+  color: var(--secondary-color);
+  background: var(--primary-color);
+  margin: 4px;
+}
