@@ -12,6 +12,7 @@ import {
 } from "../controllers/user.controllers.js";
 import { userLoginSchema, userSignupSchema } from "../schema/validationSchema.js";
 import { validateRequest } from "../middlewares/validateRequest.js";
+import { multerFileUpload } from "../middlewares/multer.js";
 import { verifyAccessTokenHttp, verifyRefreshTokenHttp } from "../middlewares/authenticate.js";
 
 const router = Router();
@@ -30,7 +31,7 @@ router.get("/authtoken", verifyRefreshTokenHttp, issueAccessToken);
 
 router.get("/profile", verifyAccessTokenHttp, getUserProfile);
 
-router.put("/profile", verifyAccessTokenHttp, updateUserProfile);
+router.put("/profile", verifyAccessTokenHttp, multerFileUpload.single("avatar"), updateUserProfile);
 
 router.delete("/profile", verifyAccessTokenHttp, verifyRefreshTokenHttp, deleteUser);
 

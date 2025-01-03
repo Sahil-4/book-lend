@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import logger from "../utils/logger.js";
 import { APIResponse } from "../utils/APIResponse.js";
 import * as User from "../models/user.model.js";
+import { uploadToCloudinary } from "../services/cloudinary.js";
 
 const getAllUsers = async (req: Request, res: Response) => {
   try {
@@ -219,12 +220,17 @@ const updateUserProfile = async (req: Request, res: Response) => {
     const id = req.user_id;
 
     // data to update - only these can be updated
-    const { username, phone, bio } = req.body;
+    const { name, bio } = req.body;
+
+    const avatarFilePath = req.file?.path;
+
+    const avatar = avatarFilePath ? await uploadToCloudinary(avatarFilePath, "avatar") : null;
 
     const user: Partial<User.User> = {};
-    if (username) user.username = username;
-    if (phone) user.phone = phone;
+    // if (phone) user.phone = phone;
+    if (name) user.name = name;
     if (bio) user.bio = bio;
+    if (avatar) user.avatar = avatar;
 
     // update user
     const updatedUser = await User.updateUser(id, user);
