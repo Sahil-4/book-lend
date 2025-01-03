@@ -87,8 +87,9 @@ const authSlice = createSlice({
     builder.addCase(updateUserProfile.fulfilled, (state, action) => {
       state.loading = false;
       state.error = null;
-      state.user = action.payload ? (action.payload.data as UserT) : null;
-      state.authenticated = action.payload !== undefined;
+      const userOld = state.user;
+      const userNew = action.payload?.data as UserT;
+      state.user = { ...userOld, ...userNew };
     });
 
     builder.addMatcher(
