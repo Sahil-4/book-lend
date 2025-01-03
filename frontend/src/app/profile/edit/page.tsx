@@ -21,7 +21,7 @@ const Page = () => {
         <h1>Edit Profile</h1>
         <form onSubmit={handleFormSubmit} className={styles.edit_profile_form}>
           <div className={styles.edit_profile_form_left}>
-            <input type="file" name="avatar" id="avatar" />
+            <input type="file" name="avatar" id="avatar" accept="image/*" />
             <label htmlFor="avatar">Avatar</label>
           </div>
 

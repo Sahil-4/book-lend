@@ -29,7 +29,7 @@ const Form = () => {
   return (
     <form onSubmit={handleFormSubmit} className={styles.add_book_form}>
       <div className={styles.add_book_form__left_area}>
-        <input type="file" name="cover" id="cover" />
+        <input type="file" name="cover" id="cover" accept="image/*" />
         <label htmlFor="cover">Thumbnail</label>
 
         <select name="status" id="status">
@@ -47,7 +47,7 @@ const Form = () => {
         <input type="text" placeholder="Author" name="author" />
         <input type="text" placeholder="Genre" name="genre" />
 
-        <input type="file" name="preview" id="preview" />
+        <input type="file" name="preview" id="preview" accept="application/pdf" />
         <label htmlFor="preview">Preview</label>
       </div>
 
