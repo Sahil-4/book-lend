@@ -1,7 +1,7 @@
 import API from "@/api";
 import { handleApiError } from "@/utils/api-error";
 import { ResponseType } from "@/types/response";
-import { UserLogin, UserSignup, UserT } from "@/types/user";
+import { UserLogin, UserSignup } from "@/types/user";
 
 export const login = async (user: UserLogin) => {
   try {
@@ -48,9 +48,14 @@ export const getUserProfile = async () => {
   }
 };
 
-export const updateUserProfile = async (user: Partial<UserT>) => {
+export const updateUserProfile = async (form: FormData) => {
   try {
-    const response = await API.put("/api/v1/users/profile", user);
+    API.interceptors.request.use((config) => {
+      config.headers["Content-Type"] = "application/form-data";
+      return config;
+    });
+
+    const response = await API.put("/api/v1/users/profile", form);
     return response.data as ResponseType;
   } catch (error) {
     handleApiError(error);

@@ -120,8 +120,8 @@ export const getUserProfile = createAsyncThunk("auth/profile", async () => {
   return await authAPI.getUserProfile();
 });
 
-export const updateUserProfile = createAsyncThunk("auth/update", async (user: Partial<UserT>) => {
-  return await authAPI.updateUserProfile(user);
+export const updateUserProfile = createAsyncThunk("auth/update", async (form: FormData) => {
+  return await authAPI.updateUserProfile(form);
 });
 
 export type { AuthSliceState };
