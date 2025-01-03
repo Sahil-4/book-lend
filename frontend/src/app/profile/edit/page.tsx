@@ -1,17 +1,22 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { FormEvent } from "react";
-import { useAppSelector } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { updateUserProfile } from "@/lib/features/auth/authSlice";
 import { UserT } from "@/types/user";
 import styles from "@/styles/pages/edit-profile.module.css";
 
 const Page = () => {
   const user: UserT | null = useAppSelector((state) => state.auth.user);
+  const dispatch = useAppDispatch();
+  const router = useRouter();
 
   const handleFormSubmit = (e: FormEvent) => {
     e.preventDefault();
     const form = new FormData(e.target as HTMLFormElement);
-    console.log(form.entries());
+    dispatch(updateUserProfile(form));
+    router.push(`/profile/${user?.id}`);
   };
 
   if (!user) return;
@@ -28,7 +33,13 @@ const Page = () => {
           <div className={styles.edit_profile_form_right}>
             <input type="text" name="username" disabled={true} value={user.username} />
             <input type="text" placeholder="name" name="name" />
-            <input type="number" placeholder="phone" name="phone" />
+            <input
+              type="number"
+              placeholder="phone "
+              name="phone"
+              disabled={true}
+              value={user.phone}
+            />
             <textarea placeholder="bio" name="bio" />
           </div>
 
