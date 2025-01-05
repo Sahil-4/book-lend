@@ -1,12 +1,14 @@
 "use client";
 
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { FormEvent } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { useAppDispatch } from "@/lib/hooks";
 import { createBook } from "@/lib/features/books/booksSlice";
 import styles from "@/styles/components/sections/add-book-form.module.css";
 
 const Form = () => {
+  const [cover, setCover] = useState<string>("");
   const dispatch = useAppDispatch();
   const router = useRouter();
 
@@ -16,6 +18,11 @@ const Form = () => {
       if (v instanceof File && v.name === "") return false;
     }
     return true;
+  };
+
+  const updateCoverURI = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files ? e.target.files[0] : null;
+    if (file) setCover(URL.createObjectURL(file));
   };
 
   const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -29,8 +36,10 @@ const Form = () => {
   return (
     <form onSubmit={handleFormSubmit} className={styles.add_book_form}>
       <div className={styles.add_book_form__left_area}>
-        <input type="file" name="cover" id="cover" accept="image/*" />
-        <label htmlFor="cover">Thumbnail</label>
+        <input type="file" name="cover" id="cover" accept="image/*" onChange={updateCoverURI} />
+        <label htmlFor="cover">
+          {cover ? <Image src={cover} alt={cover} fill={true} /> : "Thumbnail"}
+        </label>
 
         <select name="status" id="status">
           <option value="Sell">Sell</option>

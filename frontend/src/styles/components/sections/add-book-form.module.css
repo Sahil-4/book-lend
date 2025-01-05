@@ -32,6 +32,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 
 .add_book_form__right_area > textarea:nth-child(2) {
