@@ -6,12 +6,14 @@ import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { getBookById } from "@/lib/features/books/booksSlice";
 import { BookT } from "@/types/book";
+import { UserT } from "@/types/user";
 import styles from "@/styles/pages/browse-books.module.css";
 
 const Page = ({ params }: { params: Promise<{ bookId: string }> }) => {
   const [bookId, setBookId] = useState<string | null>(null);
   const books: Map<string, BookT> = useAppSelector((state) => state.books.booksMap);
   const [book, setBook] = useState<BookT | null>(null);
+  const user: UserT = useAppSelector((state) => state.auth.user);
 
   const dispatch = useAppDispatch();
 
@@ -44,8 +46,14 @@ const Page = ({ params }: { params: Promise<{ bookId: string }> }) => {
               Preview
             </Link>
             <p>Price: {book.price}</p>
-            <button>Chat with seller</button>
-            <button>Edit</button>
+            <Link href={`/chat/${book.sellerId}`} className={styles.book_details__link_button}>
+              Chat with seller
+            </Link>
+            {user && user.id === book.sellerId && (
+              <Link href={`/browse/${book.id}/edit`} className={styles.book_details__link_button}>
+                Edit
+              </Link>
+            )}
           </div>
         </div>
 

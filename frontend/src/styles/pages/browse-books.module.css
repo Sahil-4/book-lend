@@ -25,13 +25,14 @@
   font-size: var(--font-size-larger);
 }
 
-.book_details__metadata_container > button {
-  height: 42px;
+.book_details__link_button {
   color: var(--secondary-color);
   background: var(--primary-color);
   font-size: var(--font-size-large);
-  padding: 0 var(--spacing-small);
-  margin-right: var(--spacing-medium);
+  display: block;
+  text-align: center;
+  padding: var(--spacing-small);
+  margin: var(--spacing-medium) 0;
 }
 
 @media only screen and (max-width: 426px) {
