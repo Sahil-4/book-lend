@@ -170,8 +170,8 @@ export const createBook = createAsyncThunk("books/create", async (book: FormData
   return await booksAPI.createBook(book);
 });
 
-export const updateBook = createAsyncThunk("books/update", async (book: Partial<BookT>) => {
-  return await booksAPI.updateBook(book);
+export const updateBook = createAsyncThunk("books/update", async (payload: {book: FormData, id: string}) => {
+  return await booksAPI.updateBook(payload.book, payload.id);
 });
 
 export const deleteBook = createAsyncThunk("books/delete", async (id: string) => {
