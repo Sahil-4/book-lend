@@ -8,11 +8,15 @@
   grid-template-columns: 1fr 2fr;
 }
 
-.edit_profile_form_left {
-  height: 240px;
-  display: flex;
+.edit_profile_form_left > label {
+  height: 180px;
+  width: 180px;
+  display: grid;
   justify-content: center;
   align-items: center;
+  position: relative;
+  border-radius: 50%;
+  overflow: hidden;
   border: 1px solid var(--accent-color);
   margin: 0 var(--spacing-medium);
 }
