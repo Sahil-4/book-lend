@@ -41,7 +41,15 @@ router.post(
   createBook,
 );
 
-router.put("/:id", validateRequest(bookSchemaUpdate), updateBook);
+router.put(
+  "/:id",
+  multerFileUpload.fields([
+    { name: "cover", maxCount: 1 },
+    { name: "preview", maxCount: 1 },
+  ]),
+  validateRequest(bookSchemaUpdate),
+  updateBook,
+);
 
 router.delete("/:id", deleteBook);
 

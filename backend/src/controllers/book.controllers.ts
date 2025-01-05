@@ -100,14 +100,26 @@ const updateBook = async (req: Request, res: Response) => {
     const id = req.params.id;
     const body = req.body;
 
+    const files: any = { ...req.files };
+
+    let coverImagePath: string | null = null;
+    let previewFilePath: string | null = null;
+
+    if (files && files.cover && files.cover[0].path) coverImagePath = files.cover[0].path;
+    if (files && files.preview && files.preview[0].path) previewFilePath = files.preview[0].path;
+
+    const coverImageURL = coverImagePath ? await uploadToCloudinary(coverImagePath, "cover") : null;
+    const previewFileURL = previewFilePath ? await uploadToCloudinary(previewFilePath, "preview") : null;
+
     const bookObj: Partial<Omit<Book.Book, "id" | "createdAt" | "updatedAt" | "sellerId">> = {};
     if (body.title) bookObj.title = body.title;
     if (body.description) bookObj.description = body.description;
     if (body.author) bookObj.author = body.author;
     if (body.genre) bookObj.genre = body.genre;
-    if (body.preview) bookObj.preview = body.preview;
-    if (body.price) bookObj.price = body.price;
+    if (body.price) bookObj.price = parseFloat(body.price);
     if (body.status) bookObj.status = body.status;
+    if (previewFileURL) bookObj.preview = previewFileURL;
+    if (coverImageURL) bookObj.cover = coverImageURL;
 
     const updatedBook = await Book.updateBook(id, bookObj);
 
