@@ -22,6 +22,7 @@
   text-align: center;
   transition-duration: var(--transition-duration);
   transition-timing-function: var(--transition-ease);
+  overflow: hidden;
 }
 
 .book_item:hover {
