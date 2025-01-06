@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { Dispatch, FormEvent, SetStateAction, useRef, useState } from "react";
 import { useAppDispatch } from "@/lib/hooks";
 import { login, signup } from "@/lib/features/auth/authSlice";
@@ -15,6 +16,7 @@ const SignupForm = ({
   const phone_input_ref = useRef<HTMLInputElement | null>(null);
   const password_input_ref = useRef<HTMLInputElement | null>(null);
 
+  const router = useRouter();
   const dispatch = useAppDispatch();
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -28,6 +30,7 @@ const SignupForm = ({
     if (!name || !phone || !username || !password) return;
 
     dispatch(signup({ name, phone, username, password, bio: "" }));
+    router.push("/");
   };
 
   return (
@@ -66,6 +69,7 @@ const LoginForm = ({
   const username_input_ref = useRef<HTMLInputElement | null>(null);
   const password_input_ref = useRef<HTMLInputElement | null>(null);
 
+  const router = useRouter();
   const dispatch = useAppDispatch();
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -78,6 +82,7 @@ const LoginForm = ({
     if (!phone || !username || !password) return;
 
     dispatch(login({ phone, username, password }));
+    router.push("/");
   };
 
   return (
