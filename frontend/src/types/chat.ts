@@ -3,7 +3,7 @@ import { UserT } from "@/types/user";
 
 type ChatT = {
   id: string;
-  participants: Pick<UserT, "id" | "name" | "username" | "bio">[];
+  participants: Pick<UserT, "id" | "username" | "name" | "avatar" | "bio">[];
   messages: MessageT[];
   createdAt: Date;
   updatedAt: Date;
