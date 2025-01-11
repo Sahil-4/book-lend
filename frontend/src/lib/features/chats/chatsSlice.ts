@@ -108,9 +108,12 @@ export const getChat = createAsyncThunk("chats/id", async (id: string) => {
   return await chatsAPI.getChat(id);
 });
 
-export const createChat = createAsyncThunk("chats/create", async (participants: string[]) => {
-  return await chatsAPI.createChat(participants);
-});
+export const createChat = createAsyncThunk(
+  "chats/create",
+  async (participants: { participant1: string; participant2: string }) => {
+    return await chatsAPI.createChat(participants);
+  },
+);
 
 export const deleteChat = createAsyncThunk("chats/delete", async (id: string) => {
   return await chatsAPI.deleteChat(id);

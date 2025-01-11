@@ -21,7 +21,7 @@ export const getChat = async (id: string) => {
   }
 };
 
-export const createChat = async (participants: string[]) => {
+export const createChat = async (participants: { participant1: string; participant2: string }) => {
   try {
     const response = await API.post("/api/v1/chats", participants);
     return response.data as ResponseType;
