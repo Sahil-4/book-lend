@@ -25,6 +25,12 @@ export const getChatById = async (userId: string, id: string): Promise<Chat | nu
 };
 
 export const createChat = async (participants: string[]): Promise<Chat> => {
+  const existingChat = await prisma.chat.findFirst({
+    where: { participants: { every: { id: { in: participants } } } },
+    include: { participants: true, messages: true },
+  });
+  if (existingChat) return existingChat;
+
   return await prisma.chat.create({
     data: { participants: { connect: participants.map((userId) => ({ id: userId })) } },
     include: { participants: true, messages: true },
