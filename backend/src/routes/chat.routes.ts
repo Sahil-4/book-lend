@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {
   getAllChats,
-  getChat,
+  getMessagesByChatId,
   addChatMessage,
   deleteChatMessage,
   createChat,
@@ -15,7 +15,7 @@ router.use(verifyAccessTokenHttp);
 
 router.get("/", getAllChats);
 
-router.get("/:id", getChat);
+router.get("/:id", getMessagesByChatId);
 
 router.post("/", createChat);
 

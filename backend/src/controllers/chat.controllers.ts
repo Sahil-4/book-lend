@@ -16,21 +16,16 @@ const getAllChats = async (req: Request, res: Response) => {
   }
 };
 
-const getChat = async (req: Request, res: Response) => {
+const getMessagesByChatId = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const userId = req.user_id;
 
-    const chat = await Chat.getChatById(userId, id);
+    const messages = await Message.getMessagesByChatId(id);
 
-    if (!chat) {
-      return res.status(404).send(new APIResponse(404, null, "no chat found"));
-    }
-
-    res.status(200).send(new APIResponse(200, chat, "chat fetched"));
+    res.status(200).send(new APIResponse(200, messages, "messages fetched"));
   } catch (error: any) {
     logger.error(error.message);
-    res.status(501).send(new APIResponse(501, null, "failed to fetch chat"));
+    res.status(501).send(new APIResponse(501, null, "failed to fetch messages"));
   }
 };
 
@@ -94,4 +89,11 @@ const deleteChat = async (req: Request, res: Response) => {
   }
 };
 
-export { getAllChats, getChat, addChatMessage, deleteChatMessage, createChat, deleteChat };
+export {
+  getAllChats,
+  getMessagesByChatId,
+  addChatMessage,
+  deleteChatMessage,
+  createChat,
+  deleteChat,
+};

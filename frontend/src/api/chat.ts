@@ -12,7 +12,7 @@ export const getAllChats = async () => {
   }
 };
 
-export const getChat = async (id: string) => {
+export const getChatMessages = async (id: string) => {
   try {
     const response = await API.get(`/api/v1/chats/${id}`);
     return response.data as ResponseType;

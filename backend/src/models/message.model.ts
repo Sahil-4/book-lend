@@ -13,6 +13,12 @@ interface Message {
   updatedAt: Date;
 }
 
+export const getMessagesByChatId = async (id: string): Promise<Message[]> => {
+  return await prisma.message.findMany({
+    where: { chatId: id },
+  });
+};
+
 export const getMessageById = async (id: string): Promise<Message | null> => {
   return await prisma.message.findUnique({
     where: { id },

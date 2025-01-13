@@ -34,16 +34,21 @@ const chatsSlice = createSlice({
       (action.payload?.data as ChatT[]).forEach((chat) => state.chatsMap.set(chat.id, chat));
       state.chats = Array.from(state.chatsMap.values());
     });
-    builder.addCase(getChat.rejected, (state, action) => {
+    builder.addCase(getChatMessages.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error.message;
     });
-    builder.addCase(getChat.fulfilled, (state, action) => {
+    builder.addCase(getChatMessages.fulfilled, (state, action) => {
       state.loading = false;
       state.error = null;
-      const chat = action.payload?.data as ChatT;
-      state.chatsMap.set(chat.id, chat);
-      state.chats = Array.from(state.chatsMap.values());
+      const messages = new Map<string, MessageT>();
+      state.chatsMessages.get(action.meta.arg)?.forEach((message) => {
+        messages.set(message.id, message);
+      });
+      (action.payload?.data as ChatT).messages?.forEach((message) => {
+        messages.set(message.id, message);
+      });
+      state.chatsMessages.set(action.meta.arg, Array.from(messages.values()));
     });
     builder.addCase(createChat.rejected, (state, action) => {
       state.loading = false;
@@ -117,8 +122,8 @@ export const getAllChats = createAsyncThunk("chats/all", async () => {
   return await chatsAPI.getAllChats();
 });
 
-export const getChat = createAsyncThunk("chats/id", async (id: string) => {
-  return await chatsAPI.getChat(id);
+export const getChatMessages = createAsyncThunk("chats/messages", async (id: string) => {
+  return await chatsAPI.getChatMessages(id);
 });
 
 export const createChat = createAsyncThunk(
