@@ -16,4 +16,6 @@ RUN npm run prisma-generate
 
 RUN npm run build
 
+RUN mkdir uploads/
+
 ENTRYPOINT [ "node", "dist/index.js" ]
