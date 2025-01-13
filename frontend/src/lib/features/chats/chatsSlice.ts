@@ -6,15 +6,15 @@ import { MessageCreate, MessageT } from "@/types/message";
 interface ChatsSliceState {
   error: unknown;
   loading: boolean;
-  chats: Set<ChatT>;
+  chats: ChatT[];
   chatsMap: Map<string, ChatT>;
-  chatsMessages: Map<string, Set<MessageT>>;
+  chatsMessages: Map<string, MessageT[]>;
 }
 
 const initialState: ChatsSliceState = {
   error: null,
   loading: false,
-  chats: new Set(),
+  chats: [],
   chatsMap: new Map(),
   chatsMessages: new Map(),
 };
@@ -31,7 +31,8 @@ const chatsSlice = createSlice({
     builder.addCase(getAllChats.fulfilled, (state, action) => {
       state.loading = false;
       state.error = null;
-      (action.payload?.data as ChatT[]).forEach((chat) => state.chats.add(chat));
+      (action.payload?.data as ChatT[]).forEach((chat) => state.chatsMap.set(chat.id, chat));
+      state.chats = Array.from(state.chatsMap.values());
     });
     builder.addCase(getChat.rejected, (state, action) => {
       state.loading = false;
@@ -42,6 +43,7 @@ const chatsSlice = createSlice({
       state.error = null;
       const chat = action.payload?.data as ChatT;
       state.chatsMap.set(chat.id, chat);
+      state.chats = Array.from(state.chatsMap.values());
     });
     builder.addCase(createChat.rejected, (state, action) => {
       state.loading = false;
@@ -51,8 +53,8 @@ const chatsSlice = createSlice({
       state.loading = false;
       state.error = null;
       const chat = action.payload?.data as ChatT;
-      state.chats.add(chat);
       state.chatsMap.set(chat.id, chat);
+      state.chats = Array.from(state.chatsMap.values());
     });
     builder.addCase(deleteChat.rejected, (state, action) => {
       state.loading = false;
@@ -61,9 +63,8 @@ const chatsSlice = createSlice({
     builder.addCase(deleteChat.fulfilled, (state, action) => {
       state.loading = false;
       state.error = null;
-      state.chats.forEach((chat) => {
-        if (chat.id === action.meta.arg) state.chats.delete(chat);
-      });
+      state.chatsMap.delete(action.meta.arg);
+      state.chats = Array.from(state.chatsMap.values());
     });
     builder.addCase(addChatMessage.rejected, (state, action) => {
       state.loading = false;
@@ -73,10 +74,9 @@ const chatsSlice = createSlice({
       state.loading = false;
       state.error = null;
       const message = action.payload?.data as MessageT;
-      if (state.chatsMessages.get(message.chatId) === null) {
-        state.chatsMessages.set(message.chatId, new Set());
-      }
-      state.chatsMessages.get(message.chatId)?.add(message);
+      const messages: MessageT[] = state.chatsMessages.get(message.chatId) || [];
+      messages.push(message);
+      state.chatsMessages.set(message.chatId, messages);
     });
     builder.addCase(deleteChatMessage.rejected, (state, action) => {
       state.loading = false;
@@ -85,11 +85,12 @@ const chatsSlice = createSlice({
     builder.addCase(deleteChatMessage.fulfilled, (state, action) => {
       state.loading = false;
       state.error = null;
-      state.chatsMessages.get(action.meta.arg.cid)?.forEach((message) => {
-        if (message.id == action.meta.arg.mid) {
-          state.chatsMessages.get(action.meta.arg.cid)?.delete(message);
-        }
-      });
+      state.chatsMessages.set(
+        action.meta.arg.cid,
+        (state.chatsMessages.get(action.meta.arg.cid) || []).filter(
+          (message) => message.id !== action.meta.arg.mid,
+        ),
+      );
     });
     builder.addMatcher(
       (action) => action.type.endsWith("/pending"),
@@ -99,6 +100,18 @@ const chatsSlice = createSlice({
     );
   },
 });
+
+export const findChatByUserIds = (state: ChatsSliceState, userId1: string, userId2: string) => {
+  return state.chats.find(
+    (chat) =>
+      chat.participants.some((p) => p.id === userId1) &&
+      chat.participants.some((p) => p.id === userId2),
+  );
+};
+
+export const getChatById = (state: ChatsSliceState, id: string) => {
+  return state.chats.find((chat) => chat.id === id);
+};
 
 export const getAllChats = createAsyncThunk("chats/all", async () => {
   return await chatsAPI.getAllChats();
