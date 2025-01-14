@@ -1,4 +1,7 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { getChatMessages } from "@/lib/features/chats/chatsSlice";
+import { ChatT } from "@/types/chat";
 import { MessageT } from "@/types/message";
 import styles from "@/styles/pages/chats.module.css";
 
@@ -24,55 +27,36 @@ const ReceivedMessage = ({ message }: { message: MessageT }) => {
   );
 };
 
-const MessageBubble = ({ message }: { message: MessageT }) => {
-  const me = "user_id_001";
-  if (message.senderId == me) return <SentMessage message={message} />;
+const MessageBubble = ({ message, mine }: { message: MessageT; mine: boolean }) => {
+  if (mine) return <SentMessage message={message} />;
   return <ReceivedMessage message={message} />;
 };
 
-const MessageListContainer = ({ chatId }: { chatId: string }) => {
-  console.log(chatId);
-  const messages: MessageT[] = useMemo(
-    () => [
-      {
-        id: "message_id_001",
-        chatId: "chat_id_001",
-        type: "text",
-        content: "Hello",
-        isRead: true,
-        senderId: "user_id_001",
-        receiverId: "user_id_002",
-        createdAt: "16:12",
-      },
-      {
-        id: "message_id_002",
-        chatId: "chat_id_001",
-        type: "text",
-        content: "Hello",
-        isRead: true,
-        senderId: "user_id_002",
-        receiverId: "user_id_001",
-        createdAt: "16:12",
-      },
-    ],
-    [],
-  );
+const MessageListContainer = ({ chat }: { chat: ChatT }) => {
+  const user = useAppSelector((state) => state.auth.user);
+  const messages: MessageT[] = useAppSelector((state) => state.chats.chatsMessages.get(chat.id));
+  const dispatch = useAppDispatch();
 
   const messageEndRef = useRef<HTMLDivElement>(null);
 
-  const scrollToBottom = () => {
+  const scrollToBottom = useCallback(() => {
     if (!messageEndRef.current) return;
     messageEndRef.current.scroll({ top: messageEndRef.current.scrollHeight });
-  };
+  }, []);
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [scrollToBottom, messages]);
+
+  useEffect(() => {
+    if (messages) return;
+    dispatch(getChatMessages(chat.id));
+  }, [chat.id, dispatch, messages]);
 
   return (
     <div className={styles.message_list_container} ref={messageEndRef}>
-      {messages.map((message) => (
-        <MessageBubble key={message.id} message={message} />
+      {messages?.map((message) => (
+        <MessageBubble key={message.id} message={message} mine={user.id === message.senderId} />
       ))}
     </div>
   );
