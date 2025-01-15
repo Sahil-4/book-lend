@@ -6,8 +6,8 @@ type MessageT = {
   senderId: string;
   receiverId: string;
   chatId: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 };
 
 type MessageCreate = Omit<MessageT, "id" | "isRead" | "createdAt" | "updatedAt">;

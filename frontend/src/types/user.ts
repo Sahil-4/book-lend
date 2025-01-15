@@ -8,8 +8,8 @@ interface UserT {
   accessToken: string | null;
   refreshToken: string | null;
   password: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 type UserLogin = Pick<UserT, "username" | "phone" | "password">;

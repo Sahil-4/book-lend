@@ -17,8 +17,8 @@ type BookT = {
   status: Status;
   seller: UserT;
   sellerId: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 };
 
 type BookCreate = Omit<BookT, "id" | "seller" | "createdAt" | "updatedAt">;

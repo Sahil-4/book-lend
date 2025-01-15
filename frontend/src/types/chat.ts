@@ -5,8 +5,8 @@ type ChatT = {
   id: string;
   participants: Pick<UserT, "id" | "username" | "name" | "avatar" | "bio">[];
   messages: MessageT[];
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type { ChatT };

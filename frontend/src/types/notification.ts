@@ -1,6 +1,6 @@
 type NotificationT = {
   id: string;
-  timestamp: Date;
+  timestamp: string;
   type: string;
   content: string;
   isRead: boolean;
