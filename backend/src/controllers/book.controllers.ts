@@ -99,6 +99,13 @@ const updateBook = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
     const body = req.body;
+    const uid = req.user_id;
+
+    const book = await Book.getBookById(id);
+
+    if (!book) return res.status(404).send(new APIResponse(404, null, "book not found"));;
+
+    if (book.sellerId !== uid) return res.status(401).send(new APIResponse(401, null, "unauthorised"));;
 
     const files: any = { ...req.files };
 
@@ -137,6 +144,14 @@ const updateBook = async (req: Request, res: Response) => {
 const deleteBook = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
+    const uid = req.user_id;
+
+    const book = await Book.getBookById(id);
+
+    if (!book) return res.status(404).send(new APIResponse(404, null, "book not found"));;
+
+    if (book.sellerId !== uid) return res.status(401).send(new APIResponse(401, null, "unauthorised"));;
+
     await Book.deleteBook(id);
     res.status(200).send(new APIResponse(200, null, "book deleted"));
   } catch (error: any) {
