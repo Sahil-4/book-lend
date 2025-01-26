@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { BooksList } from "@/components/common";
-import { useAppSelector } from "@/lib/hooks";
+import { getMyBooks } from "@/lib/features/books/booksSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { AuthSliceState } from "@/lib/features/auth/authSlice";
 import { UserT } from "@/types/user";
 import styles from "@/styles/pages/user-profile.module.css";
@@ -34,6 +35,9 @@ const Page = ({ params }: { params: Promise<{ userId: string }> }) => {
   const [user, setUser] = useState<UserT | null>(null);
 
   const authState: AuthSliceState = useAppSelector((state) => state.auth);
+  const books = useAppSelector((state) => state.books.myBooks);
+
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     (async () => {
@@ -43,13 +47,16 @@ const Page = ({ params }: { params: Promise<{ userId: string }> }) => {
 
   useEffect(() => {
     // !TODO - use `userId` to update user and show profile
-    if (authState.user?.id == userId) setUser(authState.user);
-  }, [authState.user, userId]);
+    if (authState.user?.id == userId) {
+      setUser(authState.user);
+      dispatch(getMyBooks());
+    }
+  }, [authState.user, dispatch, userId]);
 
   return (
     <section>
       <UserProfile user={user} flag={authState.user?.id === userId} />
-      <BooksList books={[]} slugName="Your books" />
+      <BooksList books={books} slugName="My books" />
     </section>
   );
 };

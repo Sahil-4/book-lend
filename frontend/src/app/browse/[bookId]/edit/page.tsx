@@ -112,7 +112,7 @@ const Page = ({ params }: { params: Promise<{ bookId: string }> }) => {
   const [bookId, setBookId] = useState<string | null>(null);
   const [book, setBook] = useState<BookT | null>(null);
 
-  const books: Map<string, BookT> = useAppSelector((state) => state.books.myBooksMap);
+  const books: Map<string, BookT> = useAppSelector((state) => state.books.booksMap);
 
   const dispatch = useAppDispatch();
 
