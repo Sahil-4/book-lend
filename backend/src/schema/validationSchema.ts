@@ -6,7 +6,6 @@ export const userSignupSchema = Joi.object({
   username: Joi.string().min(3).required(),
   phone: Joi.string().min(10).required(),
   password: Joi.string().min(6).required(),
-  bio: Joi.string().allow("", null),
 });
 
 export const userLoginSchema = Joi.object({
@@ -21,8 +20,6 @@ export const bookSchema = Joi.object({
   description: Joi.string().required(),
   author: Joi.string().required(),
   genre: Joi.string().required(),
-  cover: Joi.any(),
-  preview: Joi.any(),
   price: Joi.number(),
   status: Joi.string().required(),
 });
