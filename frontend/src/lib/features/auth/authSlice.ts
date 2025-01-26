@@ -12,14 +12,19 @@ interface AuthSliceState {
 const initialState: AuthSliceState = {
   error: null,
   loading: false,
-  authenticated: localStorage.getItem("user") ? true : false,
-  user: localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!) : null,
+  authenticated: false,
+  user: null,
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    getUser: (state) => {
+      state.authenticated = localStorage.getItem("user") ? true : false;
+      state.user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!) : null;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(signup.rejected, (state, action) => {
       state.loading = false;
@@ -126,5 +131,5 @@ export const updateUserProfile = createAsyncThunk("auth/update", async (form: Fo
 });
 
 export type { AuthSliceState };
-export const {} = authSlice.actions;
+export const { getUser } = authSlice.actions;
 export default authSlice;

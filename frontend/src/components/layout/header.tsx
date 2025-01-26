@@ -5,7 +5,7 @@ import { useCallback, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import Menu from "@/components/layout/menu";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { issueAccessToken, logout } from "@/lib/features/auth/authSlice";
+import { getUser, issueAccessToken, logout } from "@/lib/features/auth/authSlice";
 import { JWTDecoded, UserT } from "@/types/user";
 import styles from "@/styles/components/layout/header.module.css";
 
@@ -43,6 +43,10 @@ const Header = () => {
       dispatch(logout());
     }
   }, [dispatch, user]);
+
+  useEffect(() => {
+    dispatch(getUser());
+  }, [dispatch]);
 
   useEffect(() => {
     verifyTokens();
