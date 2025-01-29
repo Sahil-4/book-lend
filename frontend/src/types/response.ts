@@ -3,6 +3,7 @@ type ResponseType = {
   data: unknown;
   message: string;
   success: boolean;
+  meta?: Record<string, unknown>;
 };
 
 export type { ResponseType };
