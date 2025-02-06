@@ -10,10 +10,25 @@ interface Chat {
   updatedAt: Date;
 }
 
-export const getAllChats = async (userId: string): Promise<Omit<Chat, "messages">[]> => {
+export const getAllChatsCount = async (userId: string) => {
+  return await prisma.chat.count({
+    where: { participants: { some: { id: userId } } },
+  });
+};
+
+export const getAllChats = async (
+  userId: string,
+  take: number,
+  skip: number,
+): Promise<Omit<Chat, "messages">[]> => {
   return await prisma.chat.findMany({
     where: { participants: { some: { id: userId } } },
     include: { participants: true },
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: take,
+    skip: skip,
   });
 };
 

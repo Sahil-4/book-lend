@@ -9,9 +9,24 @@ interface Notification {
   userId: string;
 }
 
-export const getAllNotifications = async (userId: string): Promise<Notification[]> => {
+export const getAllNotificationsCount = async (userId: string) => {
+  return await prisma.notification.count({
+    where: { userId },
+  });
+};
+
+export const getAllNotifications = async (
+  userId: string,
+  take: number,
+  skip: number,
+): Promise<Notification[]> => {
   return await prisma.notification.findMany({
     where: { userId },
+    orderBy: {
+      timestamp: "desc",
+    },
+    take: take,
+    skip: skip,
   });
 };
 

@@ -15,10 +15,21 @@ interface User {
   updatedAt: Date;
 }
 
-export const getAllUsers = async (): Promise<
-  Omit<User, "password" | "updatedAt" | "phone" | "refreshToken">[]
-> => {
-  return await prisma.user.findMany();
+export const getAllUsersCount = async () => {
+  return await prisma.user.count();
+};
+
+export const getAllUsers = async (
+  take: number,
+  skip: number,
+): Promise<Omit<User, "password" | "updatedAt" | "phone" | "refreshToken">[]> => {
+  return await prisma.user.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: take,
+    skip: skip,
+  });
 };
 
 export const getUserById = async (

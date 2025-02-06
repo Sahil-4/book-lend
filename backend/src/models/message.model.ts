@@ -13,9 +13,24 @@ interface Message {
   updatedAt: Date;
 }
 
-export const getMessagesByChatId = async (id: string): Promise<Message[]> => {
+export const getMessagesCount = async (chatId: string) => {
+  return await prisma.message.count({
+    where: { chatId },
+  });
+};
+
+export const getMessagesByChatId = async (
+  id: string,
+  take: number,
+  skip: number,
+): Promise<Message[]> => {
   return await prisma.message.findMany({
     where: { chatId: id },
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: take,
+    skip: skip,
   });
 };
 

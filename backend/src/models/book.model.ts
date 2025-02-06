@@ -19,20 +19,60 @@ interface Book {
   updatedAt: Date;
 }
 
-export const getAllBooks = async (): Promise<Book[]> => {
+export const getBooksCount = async () => {
+  return await prisma.book.count();
+};
+
+export const getAuthorsCount = async () => {
+  const results = await prisma.book.findMany({
+    distinct: ["author"],
+    select: {
+      author: true,
+    },
+  });
+
+  return results.length;
+};
+
+export const getGenresCount = async () => {
+  const results = await prisma.book.findMany({
+    distinct: ["genre"],
+    select: {
+      genre: true,
+    },
+  });
+
+  return results.length;
+};
+
+export const getAllBooks = async (take: number, skip: number): Promise<Book[]> => {
   return await prisma.book.findMany({
     include: {
       seller: true,
     },
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: take,
+    skip: skip,
   });
 };
 
-export const getSellersBooks = async (sellerId: string): Promise<Book[]> => {
+export const getSellersBooks = async (
+  sellerId: string,
+  take: number,
+  skip: number,
+): Promise<Book[]> => {
   return await prisma.book.findMany({
     where: { sellerId },
     include: {
       seller: true,
     },
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: take,
+    skip: skip,
   });
 };
 
@@ -47,6 +87,8 @@ export const getBookById = async (id: string): Promise<Book | null> => {
 
 export const searchBooks = async (
   queryObj: Partial<Pick<Book, "title" | "description" | "author" | "genre">>,
+  take: number,
+  skip: number,
 ): Promise<Book[]> => {
   return await prisma.book.findMany({
     where: {
@@ -60,6 +102,11 @@ export const searchBooks = async (
     include: {
       seller: true,
     },
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: take,
+    skip: skip,
   });
 };
 
@@ -96,19 +143,29 @@ export const deleteBook = async (id: string): Promise<Book> => {
   });
 };
 
-export const getAllAuthors = async (): Promise<string[]> => {
+export const getAllAuthors = async (take: number, skip: number): Promise<string[]> => {
   const result = await prisma.book.findMany({
     distinct: ["author"],
     select: { author: true },
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: take,
+    skip: skip,
   });
 
   return result.map((book) => book.author);
 };
 
-export const getAllGenres = async (): Promise<string[]> => {
+export const getAllGenres = async (take: number, skip: number): Promise<string[]> => {
   const result = await prisma.book.findMany({
     distinct: ["genre"],
     select: { genre: true },
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: take,
+    skip: skip,
   });
 
   return result.map((book) => book.genre);
