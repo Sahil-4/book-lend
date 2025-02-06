@@ -7,8 +7,15 @@ import { uploadToCloudinary } from "../services/cloudinary.js";
 
 const getAllUsers = async (req: Request, res: Response) => {
   try {
-    const users = await User.getAllUsers();
-    res.status(200).send(new APIResponse(200, users, "fetched users successfully"));
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const users = await User.getAllUsers(limit, skip);
+    const total = await User.getAllUsersCount();
+    const meta = { currentPage: page, hasMore: skip + users.length < total };
+
+    res.status(200).send(new APIResponse(200, users, "fetched users successfully", meta));
   } catch (error: any) {
     logger.error(error.message);
     res.status(501).send(new APIResponse(501, null, "unable to fetch users"));

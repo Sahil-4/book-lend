@@ -7,8 +7,15 @@ import * as Book from "../models/book.model.js";
 const getSellersBooks = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const books = await Book.getSellersBooks(id);
-    res.status(200).send(new APIResponse(200, books, "books fetched"));
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const books = await Book.getSellersBooks(id, limit, skip);
+    const total = await Book.getBooksCount();
+    const meta = { currentPage: page, hasMore: skip + books.length < total };
+
+    res.status(200).send(new APIResponse(200, books, "books fetched", meta));
   } catch (error: any) {
     logger.error(error.message);
     res.status(501).send(new APIResponse(501, null, "failed to get books"));
@@ -17,8 +24,15 @@ const getSellersBooks = async (req: Request, res: Response) => {
 
 const getAllBooks = async (req: Request, res: Response) => {
   try {
-    const books = await Book.getAllBooks();
-    res.status(200).send(new APIResponse(200, books, "books fetched"));
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const books = await Book.getAllBooks(limit, skip);
+    const total = await Book.getBooksCount();
+    const meta = { currentPage: page, hasMore: skip + books.length < total };
+
+    res.status(200).send(new APIResponse(200, books, "books fetched", meta));
   } catch (error: any) {
     logger.error(error.message);
     res.status(501).send(new APIResponse(501, null, "failed to get books"));
@@ -45,6 +59,9 @@ const searchBooks = async (req: Request, res: Response) => {
   try {
     const query = req.query;
     const { title, description, author, genre } = query;
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
 
     if (!title && !description && !author && !genre) {
       return res.status(400).send(new APIResponse(400, null, "missing query parameter"));
@@ -57,9 +74,11 @@ const searchBooks = async (req: Request, res: Response) => {
     if (author?.toString() != "") queryObj.author = author?.toString();
     if (genre?.toString() != "") queryObj.genre = genre?.toString();
 
-    const books: Book.Book[] = await Book.searchBooks(queryObj);
+    const books: Book.Book[] = await Book.searchBooks(queryObj, limit, skip);
+    const total = await Book.getBooksCount();
+    const meta = { currentPage: page, hasMore: skip + books.length < total };
 
-    res.status(200).send(new APIResponse(200, books, "books found"));
+    res.status(200).send(new APIResponse(200, books, "books found", meta));
   } catch (error: any) {
     logger.error(error.message);
     res.status(501).send(new APIResponse(501, null, "failed to search books"));
@@ -103,9 +122,10 @@ const updateBook = async (req: Request, res: Response) => {
 
     const book = await Book.getBookById(id);
 
-    if (!book) return res.status(404).send(new APIResponse(404, null, "book not found"));;
+    if (!book) return res.status(404).send(new APIResponse(404, null, "book not found"));
 
-    if (book.sellerId !== uid) return res.status(401).send(new APIResponse(401, null, "unauthorised"));;
+    if (book.sellerId !== uid)
+      return res.status(401).send(new APIResponse(401, null, "unauthorised"));
 
     const files: any = { ...req.files };
 
@@ -116,7 +136,9 @@ const updateBook = async (req: Request, res: Response) => {
     if (files && files.preview && files.preview[0].path) previewFilePath = files.preview[0].path;
 
     const coverImageURL = coverImagePath ? await uploadToCloudinary(coverImagePath, "cover") : null;
-    const previewFileURL = previewFilePath ? await uploadToCloudinary(previewFilePath, "preview") : null;
+    const previewFileURL = previewFilePath
+      ? await uploadToCloudinary(previewFilePath, "preview")
+      : null;
 
     const bookObj: Partial<Omit<Book.Book, "id" | "createdAt" | "updatedAt" | "sellerId">> = {};
     if (body.title) bookObj.title = body.title;
@@ -148,9 +170,10 @@ const deleteBook = async (req: Request, res: Response) => {
 
     const book = await Book.getBookById(id);
 
-    if (!book) return res.status(404).send(new APIResponse(404, null, "book not found"));;
+    if (!book) return res.status(404).send(new APIResponse(404, null, "book not found"));
 
-    if (book.sellerId !== uid) return res.status(401).send(new APIResponse(401, null, "unauthorised"));;
+    if (book.sellerId !== uid)
+      return res.status(401).send(new APIResponse(401, null, "unauthorised"));
 
     await Book.deleteBook(id);
     res.status(200).send(new APIResponse(200, null, "book deleted"));
@@ -162,8 +185,15 @@ const deleteBook = async (req: Request, res: Response) => {
 
 const getAllAuthors = async (req: Request, res: Response) => {
   try {
-    const authors = await Book.getAllAuthors();
-    res.status(200).send(new APIResponse(200, authors, "fetched authors"));
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const authors = await Book.getAllAuthors(limit, skip);
+    const total = await Book.getAuthorsCount();
+    const meta = { currentPage: page, hasMore: skip + authors.length < total };
+
+    res.status(200).send(new APIResponse(200, authors, "fetched authors", meta));
   } catch (error: any) {
     logger.error(error.message);
     res.status(501).send(new APIResponse(501, null, "failed to fetch authors"));
@@ -172,8 +202,15 @@ const getAllAuthors = async (req: Request, res: Response) => {
 
 const getAllGenres = async (req: Request, res: Response) => {
   try {
-    const genres = await Book.getAllGenres();
-    res.status(200).send(new APIResponse(200, genres, "fetched genres"));
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const genres = await Book.getAllGenres(limit, skip);
+    const total = await Book.getGenresCount();
+    const meta = { currentPage: page, hasMore: skip + genres.length < total };
+
+    res.status(200).send(new APIResponse(200, genres, "fetched genres", meta));
   } catch (error: any) {
     logger.error(error.message);
     res.status(501).send(new APIResponse(501, null, "failed to fetch genres"));
