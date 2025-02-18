@@ -2,27 +2,27 @@ import API from "@/api/";
 import { handleApiError } from "@/utils/api-error";
 import { ResponseType } from "@/types/response";
 
-export const getMyBooks = async () => {
+export const getMyBooks = async (page: number = 1, limit: number = 10) => {
   try {
-    const response = await API.get("/api/v1/books");
+    const response = await API.get(`/api/v1/books?page=${page}&limit=${limit}`);
     return response.data as ResponseType;
   } catch (error) {
     handleApiError(error);
   }
 };
 
-export const getAllBooks = async () => {
+export const getAllBooks = async (page: number = 1, limit: number = 10) => {
   try {
-    const response = await API.get("/api/v1/books/all");
+    const response = await API.get(`/api/v1/books/all?page=${page}&limit=${limit}`);
     return response.data as ResponseType;
   } catch (error) {
     handleApiError(error);
   }
 };
 
-export const searchBooks = async (query: string) => {
+export const searchBooks = async (query: string, page: number = 1, limit: number = 10) => {
   try {
-    const response = await API.get(`/api/v1/books/search?${query}`);
+    const response = await API.get(`/api/v1/books/search?${query}?page=${page}&limit=${limit}`);
     return response.data as ResponseType;
   } catch (error) {
     handleApiError(error);
@@ -38,18 +38,18 @@ export const getBookById = async (id: string) => {
   }
 };
 
-export const getAllAuthors = async () => {
+export const getAllAuthors = async (page: number = 1, limit: number = 10) => {
   try {
-    const response = await API.get("/api/v1/books/authors");
+    const response = await API.get(`/api/v1/books/authors?page=${page}&limit=${limit}`);
     return response.data as ResponseType;
   } catch (error) {
     handleApiError(error);
   }
 };
 
-export const getAllGenres = async () => {
+export const getAllGenres = async (page: number = 1, limit: number = 10) => {
   try {
-    const response = await API.get("/api/v1/books/genres");
+    const response = await API.get(`/api/v1/books/genres?page=${page}&limit=${limit}`);
     return response.data as ResponseType;
   } catch (error) {
     handleApiError(error);

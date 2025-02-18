@@ -3,18 +3,18 @@ import { handleApiError } from "@/utils/api-error";
 import { ResponseType } from "@/types/response";
 import { MessageCreate } from "@/types/message";
 
-export const getAllChats = async () => {
+export const getAllChats = async (page: number = 1, limit: number = 10) => {
   try {
-    const response = await API.get("/api/v1/chats");
+    const response = await API.get(`/api/v1/chats?page=${page}&limit=${limit}`);
     return response.data as ResponseType;
   } catch (error) {
     handleApiError(error);
   }
 };
 
-export const getChatMessages = async (id: string) => {
+export const getChatMessages = async (id: string, page: number = 1, limit: number = 10) => {
   try {
-    const response = await API.get(`/api/v1/chats/${id}`);
+    const response = await API.get(`/api/v1/chats/${id}?page=${page}&limit=${limit}`);
     return response.data as ResponseType;
   } catch (error) {
     handleApiError(error);
