@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import * as usersAPI from "@/api/user";
+import { RootState } from "@/lib/store";
 import { UserT } from "@/types/user";
 
 interface UsersSliceState {
@@ -8,6 +9,9 @@ interface UsersSliceState {
   users: Set<UserT>;
   results: Set<UserT>;
   usersMap: Map<string, UserT>;
+  page: number;
+  limit: number;
+  hasMore: boolean;
 }
 
 const initialState: UsersSliceState = {
@@ -16,6 +20,9 @@ const initialState: UsersSliceState = {
   users: new Set(),
   results: new Set(),
   usersMap: new Map(),
+  page: 1,
+  limit: 10,
+  hasMore: true,
 };
 
 const usersSlice = createSlice({
@@ -31,6 +38,8 @@ const usersSlice = createSlice({
       state.loading = false;
       state.error = null;
       (action.payload?.data as UserT[]).forEach((user) => state.users.add(user));
+      state.hasMore = !!action.payload?.meta?.hasMore;
+      state.page = state.page + 1;
       state.results = new Set(action.payload?.data as UserT[]);
     });
     builder.addCase(getUserById.rejected, (state, action) => {
@@ -52,8 +61,9 @@ const usersSlice = createSlice({
   },
 });
 
-export const getAllUsers = createAsyncThunk("users/all", async () => {
-  return await usersAPI.getAllUsers();
+export const getAllUsers = createAsyncThunk("users/all", async (_, { getState }) => {
+  const { page, limit } = (getState() as RootState).users;
+  return await usersAPI.getAllUsers(page, limit);
 });
 
 export const getUserById = createAsyncThunk("users/id", async (id: string) => {

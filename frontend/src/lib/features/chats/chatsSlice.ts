@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import * as chatsAPI from "@/api/chat";
 import { ChatT } from "@/types/chat";
+import { RootState } from "@/lib/store";
 import { MessageCreate, MessageT } from "@/types/message";
 
 interface ChatsSliceState {
@@ -9,6 +10,9 @@ interface ChatsSliceState {
   chats: ChatT[];
   chatsMap: Map<string, ChatT>;
   chatsMessages: Map<string, MessageT[]>;
+  page: number;
+  limit: number;
+  hasMore: boolean;
 }
 
 const initialState: ChatsSliceState = {
@@ -17,6 +21,9 @@ const initialState: ChatsSliceState = {
   chats: [],
   chatsMap: new Map(),
   chatsMessages: new Map(),
+  page: 1,
+  limit: 10,
+  hasMore: true,
 };
 
 const chatsSlice = createSlice({
@@ -33,6 +40,8 @@ const chatsSlice = createSlice({
       state.error = null;
       (action.payload?.data as ChatT[]).forEach((chat) => state.chatsMap.set(chat.id, chat));
       state.chats = Array.from(state.chatsMap.values());
+      state.hasMore = !!action.payload?.meta?.hasMore;
+      state.page = state.page + 1;
     });
     builder.addCase(getChatMessages.rejected, (state, action) => {
       state.loading = false;
@@ -42,13 +51,13 @@ const chatsSlice = createSlice({
       state.loading = false;
       state.error = null;
       const messages = new Map<string, MessageT>();
-      state.chatsMessages.get(action.meta.arg)?.forEach((message) => {
+      state.chatsMessages.get(action.meta.arg.chatId)?.forEach((message) => {
         messages.set(message.id, message);
       });
       (action.payload?.data as ChatT).messages?.forEach((message) => {
         messages.set(message.id, message);
       });
-      state.chatsMessages.set(action.meta.arg, Array.from(messages.values()));
+      state.chatsMessages.set(action.meta.arg.chatId, Array.from(messages.values()));
     });
     builder.addCase(createChat.rejected, (state, action) => {
       state.loading = false;
@@ -118,13 +127,17 @@ export const getChatById = (state: ChatsSliceState, id: string) => {
   return state.chats.find((chat) => chat.id === id);
 };
 
-export const getAllChats = createAsyncThunk("chats/all", async () => {
-  return await chatsAPI.getAllChats();
+export const getAllChats = createAsyncThunk("chats/all", async (_, { getState }) => {
+  const { page, limit } = (getState() as RootState).chats;
+  return await chatsAPI.getAllChats(page, limit);
 });
 
-export const getChatMessages = createAsyncThunk("chats/messages", async (id: string) => {
-  return await chatsAPI.getChatMessages(id);
-});
+export const getChatMessages = createAsyncThunk(
+  "chats/messages",
+  async ({ chatId, page = 1, limit = 30 }: { chatId: string; page?: number; limit?: number }) => {
+    return await chatsAPI.getChatMessages(chatId, page, limit);
+  },
+);
 
 export const createChat = createAsyncThunk(
   "chats/create",
