@@ -1,31 +1,35 @@
-import Link from "next/link";
+"use client";
+
+import { List } from "../sections";
+import { useEffect } from "react";
+import { BookItem } from "@/components/common";
+import { getAllBooks } from "@/lib/features/books/booksSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { BookT } from "@/types/book";
 import styles from "@/styles/components/common/books-list.module.css";
 
-const BookItem = ({ book }: { book: BookT }) => {
-  return (
-    <div className={styles.book_item}>
-      <Link href={`/browse/${book.id}`}>{book.title}</Link>
-      <p>{book.author}</p>
-      <p>{book.description}</p>
-    </div>
-  );
-};
+const BooksList = () => {
+  const dispatch = useAppDispatch();
+  const books: BookT[] = useAppSelector((state) => state.books.results);
 
-const BooksList = ({ books, slugName }: { books: BookT[]; slugName: string }) => {
+  const loadMore = () => {
+    dispatch(getAllBooks());
+  };
+
+  useEffect(() => {
+    loadMore();
+  }, []);
+
   return (
     <section className={styles.books_list_container}>
-      <p>{slugName}</p>
-
-      <div className={styles.books_list}>
-        {books.length === 0 && <p>Nothing to show here.</p>}
-        {books.map((book: BookT) => {
+      <p>Results</p>
+      <List className={styles.books_list} callback={loadMore}>
+        {books.map((book) => {
           return <BookItem key={book.id} book={book} />;
         })}
-      </div>
+      </List>
     </section>
   );
 };
 
-export { BookItem };
 export default BooksList;
