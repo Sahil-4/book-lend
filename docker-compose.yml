@@ -1,0 +1,65 @@
+name: book_lend_app
+
+services:
+  redis:
+    container_name: redis
+    image: redis:8.0-M02-alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - book-lend-net
+    volumes:
+      - book_lend_app-vol:/var/lib/redis/data
+
+  postgres:
+    container_name: postgres
+    image: postgres:17.0
+    ports:
+      - "5432:5432"
+    expose:
+      - 5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=_booklend_dev
+    volumes:
+      - book_lend_app-vol:/var/lib/postgresql/data
+    networks:
+      - book-lend-net
+
+  backend:
+    container_name: backend
+    build: ./backend
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - ./backend/.env
+    networks:
+      - book-lend-net
+    volumes:
+      - book_lend_app-vol:/var/lib/backend/data
+
+  frontend:
+    container_name: frontend
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    env_file:
+      - ./frontend/.env
+    networks:
+      - book-lend-net
+    volumes:
+      - book_lend_app-vol:/var/lib/frontend/data
+
+networks:
+  book-lend-net:
+    driver: bridge
+
+volumes:
+  book_lend_app-vol:
+    driver: local
