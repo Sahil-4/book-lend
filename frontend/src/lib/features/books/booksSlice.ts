@@ -67,7 +67,10 @@ const booksSlice = createSlice({
       state.loading = false;
       state.error = null;
       (action.payload?.data as BookT[]).forEach((book) => state.booksMap.set(book.id, book));
-      (action.payload?.data as BookT[]).map((book) => state.results.push(book));
+      const bookIds = new Set(state.results.map((book) => book.id));
+      (action.payload?.data as BookT[]).map((book) => {
+        if (!bookIds.has(book.id)) state.results.push(book);
+      });
       state.books = Array.from(state.booksMap.values());
       state.hasMore_books = !!action.payload?.meta?.hasMore;
       state.page_books = state.page_books + 1;
