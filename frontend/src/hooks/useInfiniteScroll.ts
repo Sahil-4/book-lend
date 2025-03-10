@@ -27,7 +27,7 @@ const useInfiniteScroll = (callback: () => void) => {
     return () => {
       disconnectObserver();
     };
-  }, [disconnectObserver, setObserver]);
+  }, [disconnectObserver, setObserver, eRef.current?.childNodes.length]);
 
   return { eRef };
 };
