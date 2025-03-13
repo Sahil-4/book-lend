@@ -1,3 +1,5 @@
+"use client";
+
 import { useCallback, useEffect } from "react";
 import { List } from "@/components/sections";
 import { BookItem } from "@/components/common";
