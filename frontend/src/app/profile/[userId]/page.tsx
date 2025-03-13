@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { BooksList } from "@/components/common";
-import { getMyBooks } from "@/lib/features/books/booksSlice";
+import { useEffect, useState } from "react";
+import { UserBooksList } from "@/components/common";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { AuthSliceState } from "@/lib/features/auth/authSlice";
 import { UserT } from "@/types/user";
@@ -35,7 +34,6 @@ const Page = ({ params }: { params: Promise<{ userId: string }> }) => {
   const [user, setUser] = useState<UserT | null>(null);
 
   const authState: AuthSliceState = useAppSelector((state) => state.auth);
-  const books = useAppSelector((state) => state.books.myBooks);
 
   const dispatch = useAppDispatch();
 
@@ -46,17 +44,16 @@ const Page = ({ params }: { params: Promise<{ userId: string }> }) => {
   }, [params]);
 
   useEffect(() => {
-    // !TODO - use `userId` to update user and show profile
     if (authState.user?.id == userId) {
       setUser(authState.user);
-      dispatch(getMyBooks());
     }
   }, [authState.user, dispatch, userId]);
 
+  if (!user) return <div>Loading...</div>;
   return (
     <section>
       <UserProfile user={user} flag={authState.user?.id === userId} />
-      <BooksList books={books} slugName="My books" />
+      <UserBooksList userId={user.id} />
     </section>
   );
 };
