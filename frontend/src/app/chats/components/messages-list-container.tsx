@@ -50,7 +50,7 @@ const MessageListContainer = ({ chat }: { chat: ChatT }) => {
 
   useEffect(() => {
     if (messages) return;
-    dispatch(getChatMessages(chat.id));
+    dispatch(getChatMessages({ chatId: chat.id }));
   }, [chat.id, dispatch, messages]);
 
   return (
