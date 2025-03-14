@@ -27,7 +27,7 @@ const SearchBox = () => {
     params.append(authorInput.name, authorInput.value);
     params.append(genreInput.name, genreInput.value);
 
-    dispatch(searchBooks(params.toString()));
+    dispatch(searchBooks({ query: params.toString(), limit: 100, page: 1 }));
   };
 
   useEffect(() => {
