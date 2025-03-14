@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import ChatsList from "@/app/chats/components/sidebar";
 import MessageContainer from "@/app/chats/components/message-container";
 import { createChat, findChatByUserIds } from "@/lib/features/chats/chatsSlice";
@@ -86,4 +86,12 @@ const Page = () => {
   );
 };
 
-export default Page;
+const Wrapper = () => {
+  return (
+    <Suspense>
+      <Page />
+    </Suspense>
+  );
+};
+
+export default Wrapper;
