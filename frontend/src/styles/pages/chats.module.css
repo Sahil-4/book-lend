@@ -8,12 +8,15 @@
 
 .chats_list_container {
   width: 320px;
-  height: 620px;
-  overflow: hidden scroll;
   background: var(--primary-color);
   color: var(--secondary-color);
   font-size: var(--font-size-larger);
   padding: var(--spacing-small);
+}
+
+.chats_list_container > ul {
+  height: 620px;
+  overflow: hidden scroll;
 }
 
 .chats_list_item {
@@ -47,7 +50,7 @@
 
 .messages_container {
   width: 680px;
-  height: 620px;
+  height: 680px;
   overflow: hidden;
   background: var(--primary-color);
   color: var(--secondary-color);
@@ -150,5 +153,13 @@
   .chats_list_container {
     width: 100%;
     height: auto;
+  }
+
+  .chat_section_sidebar > .messages_container {
+    display: none;
+  }
+
+  .chat_section_message_container > .chats_list_container {
+    display: none;
   }
 }

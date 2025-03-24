@@ -47,7 +47,7 @@ const Page = ({ params }: { params: Promise<{ bookId: string }> }) => {
             </Link>
             <p>Price: {book.price}</p>
             {user && user.id !== book.sellerId && (
-              <Link href={`/chats?uid=${book.sellerId}`} className={styles.book_details__link_button}>
+              <Link href={`/chats/${book.sellerId}`} className={styles.book_details__link_button}>
                 Chat with seller
               </Link>
             )}

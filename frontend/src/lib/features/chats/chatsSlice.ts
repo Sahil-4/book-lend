@@ -123,8 +123,12 @@ export const findChatByUserIds = (state: ChatsSliceState, userId1: string, userI
   );
 };
 
-export const getChatById = (state: ChatsSliceState, id: string) => {
-  return state.chats.find((chat) => chat.id === id);
+export const getChat = (state: ChatsSliceState, id: string) => {
+  return state.chats.find((chat) => {
+    if (chat.id == id || chat.participants[0].id == id || chat.participants[1].id == id) {
+      return chat;
+    }
+  });
 };
 
 export const getAllChats = createAsyncThunk("chats/all", async (_, { getState }) => {

@@ -17,7 +17,7 @@ const Chat = ({ chat }: { chat: ChatT }) => {
       <div className={styles.avatar_container}>
         <Image alt={participant.username} src={participant.avatar || "/avatar.png"} fill={true} />
       </div>
-      <Link href={`/chats?cid=${chat.id}`}>{participant.name}</Link>
+      <Link href={`/chats/${chat.id}`}>{participant.name}</Link>
       <p>{chat.messages && chat.messages[0]?.content}</p>
     </div>
   );
