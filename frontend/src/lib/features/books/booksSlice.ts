@@ -1,21 +1,17 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { enableMapSet } from "immer";
 import * as booksAPI from "@/api/book";
 import { RootState } from "@/lib/store";
 import { BookT } from "@/types/book";
 
-enableMapSet();
-
 interface BooksSliceState {
   error: unknown;
   loading: boolean;
-  books: BookT[];
-  results: BookT[];
-  myBooks: BookT[];
-  booksMap: Map<string, BookT>;
-  myBooksMap: Map<string, BookT>;
-  authors: Set<string>;
-  genres: Set<string>;
+  booksById: Record<string, BookT>;
+  resultIds: string[];
+  bookIds: string[];
+  myBookIds: string[];
+  authors: string[];
+  genres: string[];
   page_books: number;
   limit_books: number;
   hasMore_books: boolean;
@@ -33,13 +29,12 @@ interface BooksSliceState {
 const initialState: BooksSliceState = {
   error: null,
   loading: false,
-  books: [],
-  results: [],
-  myBooks: [],
-  myBooksMap: new Map(),
-  booksMap: new Map(),
-  authors: new Set(),
-  genres: new Set(),
+  booksById: {},
+  resultIds: [],
+  bookIds: [],
+  myBookIds: [],
+  authors: [],
+  genres: [],
   page_books: 1,
   limit_books: 10,
   hasMore_books: true,
@@ -64,14 +59,14 @@ const booksSlice = createSlice({
       state.error = action.error.message;
     });
     builder.addCase(getAllBooks.fulfilled, (state, action) => {
+      state.resultIds = [];
+      (action.payload?.data as BookT[]).forEach((book) => {
+        state.booksById[book.id] = book;
+        if (!state.resultIds.includes(book.id)) state.resultIds.push(book.id);
+        if (!state.bookIds.includes(book.id)) state.bookIds.push(book.id);
+      });
       state.loading = false;
       state.error = null;
-      (action.payload?.data as BookT[]).forEach((book) => state.booksMap.set(book.id, book));
-      const bookIds = new Set(state.results.map((book) => book.id));
-      (action.payload?.data as BookT[]).map((book) => {
-        if (!bookIds.has(book.id)) state.results.push(book);
-      });
-      state.books = Array.from(state.booksMap.values());
       state.hasMore_books = !!action.payload?.meta?.hasMore;
       state.page_books = state.page_books + 1;
     });
@@ -80,9 +75,11 @@ const booksSlice = createSlice({
       state.error = action.error.message;
     });
     builder.addCase(getAllAuthors.fulfilled, (state, action) => {
+      (action.payload?.data as string[]).forEach((author) => {
+        if (!state.authors.includes(author)) state.authors.push(author);
+      });
       state.loading = false;
       state.error = null;
-      (action.payload?.data as string[]).forEach((author) => state.authors.add(author));
       state.hasMore_authors = !!action.payload?.meta?.hasMore;
       state.page_authors = state.page_authors + 1;
     });
@@ -91,9 +88,11 @@ const booksSlice = createSlice({
       state.error = action.error.message;
     });
     builder.addCase(getAllGenres.fulfilled, (state, action) => {
+      (action.payload?.data as string[]).forEach((genre) => {
+        if (!state.genres.includes(genre)) state.genres.push(genre);
+      });
       state.loading = false;
       state.error = null;
-      (action.payload?.data as string[]).forEach((genre) => state.genres.add(genre));
       state.hasMore_genres = !!action.payload?.meta?.hasMore;
       state.page_genres = state.page_genres + 1;
     });
@@ -102,20 +101,25 @@ const booksSlice = createSlice({
       state.error = action.error.message;
     });
     builder.addCase(getBookById.fulfilled, (state, action) => {
+      const book: BookT = action.payload?.data as BookT;
+      state.booksById[book.id] = book;
+      if (!state.bookIds.includes(book.id)) state.bookIds.push(book.id);
+      if (!state.resultIds.includes(book.id)) state.resultIds.push(book.id);
       state.loading = false;
       state.error = null;
-      const book: BookT = action.payload?.data as BookT;
-      state.booksMap.set(book.id, book);
     });
     builder.addCase(getMyBooks.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error.message;
     });
     builder.addCase(getMyBooks.fulfilled, (state, action) => {
+      (action.payload?.data as BookT[]).forEach((book) => {
+        state.booksById[book.id] = book;
+        if (!state.bookIds.includes(book.id)) state.bookIds.push(book.id);
+        if (!state.myBookIds.includes(book.id)) state.myBookIds.push(book.id);
+      });
       state.loading = false;
       state.error = null;
-      (action.payload?.data as BookT[]).forEach((book) => state.myBooksMap.set(book.id, book));
-      state.myBooks = Array.from(state.myBooksMap.values());
       state.hasMore_myBooks = !!action.payload?.meta?.hasMore;
       state.page_myBooks = state.page_myBooks + 1;
     });
@@ -124,50 +128,53 @@ const booksSlice = createSlice({
       state.error = action.error.message;
     });
     builder.addCase(searchBooks.fulfilled, (state, action) => {
+      state.resultIds = [];
+      (action.payload?.data as BookT[]).forEach((book) => {
+        state.booksById[book.id] = book;
+        if (!state.bookIds.includes(book.id)) state.bookIds.push(book.id);
+        if (!state.resultIds.includes(book.id)) state.resultIds.push(book.id);
+      });
       state.loading = false;
       state.error = null;
-      const books: BookT[] = action.payload?.data as BookT[];
-      state.results = books;
-      books.forEach((book) => state.booksMap.set(book.id, book));
     });
     builder.addCase(createBook.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error.message;
     });
     builder.addCase(createBook.fulfilled, (state, action) => {
+      const book: BookT = action.payload?.data as BookT;
+      state.booksById[book.id] = book;
+      if (!state.resultIds.includes(book.id)) state.resultIds.push(book.id);
+      if (!state.bookIds.includes(book.id)) state.bookIds.push(book.id);
+      if (!state.myBookIds.includes(book.id)) state.myBookIds.push(book.id);
       state.loading = false;
       state.error = null;
-      const book: BookT = action.payload?.data as BookT;
-      state.books.push(book);
-      state.results.push(book);
-      state.myBooks.push(book);
-      state.booksMap.set(book.id, book);
-      state.myBooksMap.set(book.id, book);
     });
     builder.addCase(updateBook.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error.message;
     });
     builder.addCase(updateBook.fulfilled, (state, action) => {
+      const book: BookT = action.payload?.data as BookT;
+      state.booksById[book.id] = book;
+      if (!state.resultIds.includes(book.id)) state.resultIds.push(book.id);
+      if (!state.bookIds.includes(book.id)) state.bookIds.push(book.id);
+      if (!state.myBookIds.includes(book.id)) state.myBookIds.push(book.id);
       state.loading = false;
       state.error = null;
-      const book: BookT = action.payload?.data as BookT;
-      state.booksMap.set(book.id, book);
-      state.myBooksMap.set(book.id, book);
-      state.books = Array.from(state.booksMap.values());
-      state.myBooks = Array.from(state.myBooksMap.values());
     });
     builder.addCase(deleteBook.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error.message;
     });
     builder.addCase(deleteBook.fulfilled, (state, action) => {
+      const bookId = action.meta.arg;
+      delete state.booksById[bookId];
+      state.bookIds = state.bookIds.filter((id) => id !== bookId);
+      state.resultIds = state.resultIds.filter((id) => id !== bookId);
+      state.myBookIds = state.myBookIds.filter((id) => id !== bookId);
       state.loading = false;
       state.error = null;
-      state.booksMap.delete(action.meta.arg);
-      state.myBooksMap.delete(action.meta.arg);
-      state.books = Array.from(state.booksMap.values());
-      state.myBooks = Array.from(state.myBooksMap.values());
     });
     builder.addMatcher(
       (action) => action.type.endsWith("/pending"),

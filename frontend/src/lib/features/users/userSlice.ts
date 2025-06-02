@@ -6,9 +6,9 @@ import { UserT } from "@/types/user";
 interface UsersSliceState {
   error: unknown;
   loading: boolean;
-  users: Set<UserT>;
-  results: Set<UserT>;
-  usersMap: Map<string, UserT>;
+  userIds: string[];
+  searchResults: string[];
+  usersById: Record<string, UserT>;
   page: number;
   limit: number;
   hasMore: boolean;
@@ -17,9 +17,9 @@ interface UsersSliceState {
 const initialState: UsersSliceState = {
   error: null,
   loading: false,
-  users: new Set(),
-  results: new Set(),
-  usersMap: new Map(),
+  userIds: [],
+  searchResults: [],
+  usersById: {},
   page: 1,
   limit: 10,
   hasMore: true,
@@ -35,22 +35,28 @@ const usersSlice = createSlice({
       state.error = action.error.message;
     });
     builder.addCase(getAllUsers.fulfilled, (state, action) => {
+      state.searchResults = [];
+      (action.payload?.data as UserT[]).forEach((user) => {
+        state.usersById[user.id] = user;
+        if (!state.userIds.includes(user.id)) state.userIds.push(user.id);
+        if (!state.searchResults.includes(user.id)) state.searchResults.push(user.id);
+      });
       state.loading = false;
       state.error = null;
-      (action.payload?.data as UserT[]).forEach((user) => state.users.add(user));
       state.hasMore = !!action.payload?.meta?.hasMore;
       state.page = state.page + 1;
-      state.results = new Set(action.payload?.data as UserT[]);
     });
     builder.addCase(getUserById.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error.message;
     });
     builder.addCase(getUserById.fulfilled, (state, action) => {
+      const user = action.payload?.data as UserT;
+      state.usersById[user.id] = user;
+      if (!state.userIds.includes(user.id)) state.userIds.push(user.id);
+      if (!state.searchResults.includes(user.id)) state.searchResults.push(user.id);
       state.loading = false;
       state.error = null;
-      const user = action.payload?.data as UserT;
-      state.usersMap.set(user.id, user);
     });
     builder.addMatcher(
       (action) => action.type.endsWith("/pending"),

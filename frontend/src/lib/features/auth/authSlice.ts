@@ -31,11 +31,11 @@ const authSlice = createSlice({
       state.error = action.error.message;
     });
     builder.addCase(signup.fulfilled, (state, action) => {
+      state.user = action.payload ? (action.payload.data as UserT) : null;
+      state.authenticated = !!action.payload;
+      localStorage.setItem("user", JSON.stringify(state.user));
       state.loading = false;
       state.error = null;
-      state.user = action.payload ? (action.payload.data as UserT) : null;
-      state.authenticated = action.payload !== undefined;
-      localStorage.setItem("user", JSON.stringify(state.user));
     });
 
     builder.addCase(login.rejected, (state, action) => {
@@ -43,11 +43,11 @@ const authSlice = createSlice({
       state.error = action.error.message;
     });
     builder.addCase(login.fulfilled, (state, action) => {
+      state.user = action.payload ? (action.payload.data as UserT) : null;
+      state.authenticated = !!action.payload;
+      localStorage.setItem("user", JSON.stringify(state.user));
       state.loading = false;
       state.error = null;
-      state.user = action.payload ? (action.payload.data as UserT) : null;
-      state.authenticated = action.payload !== undefined;
-      localStorage.setItem("user", JSON.stringify(state.user));
     });
 
     builder.addCase(logout.rejected, (state, action) => {
@@ -55,11 +55,11 @@ const authSlice = createSlice({
       state.error = action.error.message;
     });
     builder.addCase(logout.fulfilled, (state) => {
-      state.loading = false;
-      state.error = null;
       state.user = null;
       state.authenticated = false;
       localStorage.removeItem("user");
+      state.loading = false;
+      state.error = null;
     });
 
     builder.addCase(issueAccessToken.rejected, (state, action) => {
@@ -67,11 +67,11 @@ const authSlice = createSlice({
       state.error = action.error.message;
     });
     builder.addCase(issueAccessToken.fulfilled, (state, action) => {
+      state.user = action.payload ? (action.payload.data as UserT) : null;
+      state.authenticated = !!action.payload;
+      localStorage.setItem("user", JSON.stringify(state.user));
       state.loading = false;
       state.error = null;
-      state.user = action.payload ? (action.payload.data as UserT) : null;
-      state.authenticated = action.payload !== undefined;
-      localStorage.setItem("user", JSON.stringify(state.user));
     });
 
     builder.addCase(getUserProfile.rejected, (state, action) => {
@@ -79,10 +79,10 @@ const authSlice = createSlice({
       state.error = action.error.message;
     });
     builder.addCase(getUserProfile.fulfilled, (state, action) => {
+      state.user = action.payload ? (action.payload.data as UserT) : null;
+      state.authenticated = !!action.payload;
       state.loading = false;
       state.error = null;
-      state.user = action.payload ? (action.payload.data as UserT) : null;
-      state.authenticated = action.payload !== undefined;
     });
 
     builder.addCase(updateUserProfile.rejected, (state, action) => {
@@ -90,11 +90,12 @@ const authSlice = createSlice({
       state.error = action.error.message;
     });
     builder.addCase(updateUserProfile.fulfilled, (state, action) => {
-      state.loading = false;
-      state.error = null;
       const userOld = state.user;
       const userNew = action.payload?.data as UserT;
       state.user = { ...userOld, ...userNew };
+      localStorage.setItem("user", JSON.stringify(state.user));
+      state.loading = false;
+      state.error = null;
     });
 
     builder.addMatcher(

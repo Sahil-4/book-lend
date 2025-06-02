@@ -7,9 +7,10 @@ import { MessageCreate, MessageT } from "@/types/message";
 interface ChatsSliceState {
   error: unknown;
   loading: boolean;
-  chats: ChatT[];
-  chatsMap: Map<string, ChatT>;
-  chatsMessages: Map<string, MessageT[]>;
+  chatsById: Record<string, ChatT>;
+  messagesById: Record<string, MessageT>;
+  chatIds: string[];
+  messageIdByChatId: Record<string, string[]>;
   page: number;
   limit: number;
   hasMore: boolean;
@@ -18,9 +19,10 @@ interface ChatsSliceState {
 const initialState: ChatsSliceState = {
   error: null,
   loading: false,
-  chats: [],
-  chatsMap: new Map(),
-  chatsMessages: new Map(),
+  chatsById: {},
+  messagesById: {},
+  chatIds: [],
+  messageIdByChatId: {},
   page: 1,
   limit: 10,
   hasMore: true,
@@ -36,10 +38,13 @@ const chatsSlice = createSlice({
       state.error = action.error.message;
     });
     builder.addCase(getAllChats.fulfilled, (state, action) => {
+      (action.payload?.data as ChatT[]).forEach((chat) => {
+        if (!state.chatIds.includes(chat.id)) state.chatIds.push(chat.id);
+        state.chatsById[chat.id] = chat;
+        state.messageIdByChatId[chat.id] = [];
+      });
       state.loading = false;
       state.error = null;
-      (action.payload?.data as ChatT[]).forEach((chat) => state.chatsMap.set(chat.id, chat));
-      state.chats = Array.from(state.chatsMap.values());
       state.hasMore = !!action.payload?.meta?.hasMore;
       state.page = state.page + 1;
     });
@@ -48,63 +53,60 @@ const chatsSlice = createSlice({
       state.error = action.error.message;
     });
     builder.addCase(getChatMessages.fulfilled, (state, action) => {
+      const chatId = action.meta.arg.chatId;
+      const messages = state.messageIdByChatId[chatId] || [];
+      (action.payload?.data as MessageT[]).forEach((message) => {
+        if (!messages.includes(message.id)) messages.push(message.id);
+        state.messagesById[message.id] = message;
+      });
+      state.messageIdByChatId[chatId] = messages;
       state.loading = false;
       state.error = null;
-      const messages = new Map<string, MessageT>();
-      state.chatsMessages.get(action.meta.arg.chatId)?.forEach((message) => {
-        messages.set(message.id, message);
-      });
-      (action.payload?.data as ChatT).messages?.forEach((message) => {
-        messages.set(message.id, message);
-      });
-      state.chatsMessages.set(action.meta.arg.chatId, Array.from(messages.values()));
     });
     builder.addCase(createChat.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error.message;
     });
     builder.addCase(createChat.fulfilled, (state, action) => {
+      const chat = action.payload?.data as ChatT;
+      if (!state.chatIds.includes(chat.id)) state.chatIds.push(chat.id);
+      state.chatsById[chat.id] = chat;
       state.loading = false;
       state.error = null;
-      const chat = action.payload?.data as ChatT;
-      state.chatsMap.set(chat.id, chat);
-      state.chats = Array.from(state.chatsMap.values());
     });
     builder.addCase(deleteChat.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error.message;
     });
     builder.addCase(deleteChat.fulfilled, (state, action) => {
+      state.chatIds = state.chatIds.filter((id) => id !== action.meta.arg);
+      delete state.chatsById[action.meta.arg];
       state.loading = false;
       state.error = null;
-      state.chatsMap.delete(action.meta.arg);
-      state.chats = Array.from(state.chatsMap.values());
     });
     builder.addCase(addChatMessage.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error.message;
     });
     builder.addCase(addChatMessage.fulfilled, (state, action) => {
+      const message = action.payload?.data as MessageT;
+      const messages = state.messageIdByChatId[message.chatId];
+      messages.push(message.id);
+      state.messagesById[message.id] = message;
       state.loading = false;
       state.error = null;
-      const message = action.payload?.data as MessageT;
-      const messages: MessageT[] = state.chatsMessages.get(message.chatId) || [];
-      messages.push(message);
-      state.chatsMessages.set(message.chatId, messages);
     });
     builder.addCase(deleteChatMessage.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error.message;
     });
     builder.addCase(deleteChatMessage.fulfilled, (state, action) => {
+      state.messageIdByChatId[action.meta.arg.cid] = state.messageIdByChatId[
+        action.meta.arg.cid
+      ].filter((messageId) => messageId !== action.meta.arg.mid);
+      delete state.messagesById[action.meta.arg.mid];
       state.loading = false;
       state.error = null;
-      state.chatsMessages.set(
-        action.meta.arg.cid,
-        (state.chatsMessages.get(action.meta.arg.cid) || []).filter(
-          (message) => message.id !== action.meta.arg.mid,
-        ),
-      );
     });
     builder.addMatcher(
       (action) => action.type.endsWith("/pending"),
@@ -116,19 +118,22 @@ const chatsSlice = createSlice({
 });
 
 export const findChatByUserIds = (state: ChatsSliceState, userId1: string, userId2: string) => {
-  return state.chats.find(
-    (chat) =>
-      chat.participants.some((p) => p.id === userId1) &&
-      chat.participants.some((p) => p.id === userId2),
-  );
+  for (const chatId of state.chatIds) {
+    const participants = state.chatsById[chatId].participants;
+    if (participants[0].id === userId1 && participants[1].id === userId2) return chatId;
+    if (participants[1].id === userId1 && participants[2].id === userId2) return chatId;
+  }
+  return null;
 };
 
 export const getChat = (state: ChatsSliceState, id: string) => {
-  return state.chats.find((chat) => {
+  for (const chatId of state.chatIds) {
+    const chat = state.chatsById[chatId];
     if (chat.id == id || chat.participants[0].id == id || chat.participants[1].id == id) {
       return chat;
     }
-  });
+  }
+  return null;
 };
 
 export const getAllChats = createAsyncThunk("chats/all", async (_, { getState }) => {
