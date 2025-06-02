@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         hostname: "res.cloudinary.com",
-        protocol: "http",
+        protocol: "https",
         port: "",
         search: "",
         pathname: "/book-lend-user-assets/image/**",
