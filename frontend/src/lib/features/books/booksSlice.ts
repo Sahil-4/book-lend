@@ -185,6 +185,10 @@ const booksSlice = createSlice({
   },
 });
 
+export const getBooksByUserId = (state: BooksSliceState, userId: string) => {
+  return Object.values(state.booksById).filter((book) => book.sellerId === userId);
+};
+
 export const getAllBooks = createAsyncThunk("books/all", async (_, { getState }) => {
   const { page_books, limit_books } = (getState() as RootState).books;
   return await booksAPI.getAllBooks(page_books, limit_books);
