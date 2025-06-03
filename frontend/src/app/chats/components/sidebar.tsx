@@ -7,24 +7,24 @@ import { UserT } from "@/types/user";
 import { ChatT } from "@/types/chat";
 import styles from "@/styles/pages/chats.module.css";
 
-const Chat = ({ chat }: { chat: ChatT }) => {
+const Chat = ({ chatId }: { chatId: string }) => {
   const user: UserT = useAppSelector((state) => state.auth.user);
-  const participant =
-    chat.participants[0].id !== user.id ? chat.participants[0] : chat.participants[1];
+  const chat: ChatT = useAppSelector((state) => state.chats.chatsById[chatId]);
+  const recipient = chat.participants.find((p) => p.id !== user.id)!;
 
   return (
     <div className={styles.chats_list_item}>
       <div className={styles.avatar_container}>
-        <Image alt={participant.username} src={participant.avatar || "/avatar.png"} fill={true} />
+        <Image alt={recipient.username} src={recipient.avatar || "/avatar.png"} fill={true} />
       </div>
-      <Link href={`/chats/${chat.id}`}>{participant.name}</Link>
+      <Link href={`/chats/${chat.id}`}>{recipient.name}</Link>
       <p>{chat.messages && chat.messages[0]?.content}</p>
     </div>
   );
 };
 
 const ChatsList = () => {
-  const chats: ChatT[] = useAppSelector((state) => state.chats.chats);
+  const chatIds: string[] = useAppSelector((state) => state.chats.chatIds);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -35,8 +35,8 @@ const ChatsList = () => {
     <div className={styles.chats_list_container}>
       <p>Chats</p>
       <ul className={styles.chats_list}>
-        {chats.map((chat) => (
-          <Chat key={chat.id} chat={chat} />
+        {chatIds.map((chatId) => (
+          <Chat key={chatId} chatId={chatId} />
         ))}
       </ul>
     </div>

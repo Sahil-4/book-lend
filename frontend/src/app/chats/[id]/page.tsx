@@ -6,18 +6,18 @@ import MessageContainer from "@/app/chats/components/message-container";
 import styles from "@/styles/pages/chats.module.css";
 
 const Page = ({ params }: { params: Promise<{ id: string }> }) => {
-  const [_id, setId] = useState<string | null>(null);
+  const [chatId, setChatId] = useState<string>("");
 
   useEffect(() => {
     (async () => {
-      setId((await params).id);
+      setChatId((await params).id);
     })();
   }, [params]);
 
   return (
     <section className={`${styles.chat_section} ${styles.chat_section_message_container}`}>
       <ChatsList />
-      <MessageContainer _id={_id} />
+      <MessageContainer chatId={chatId} />
     </section>
   );
 };

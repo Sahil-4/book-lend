@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, Dispatch, FormEvent, SetStateAction, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { getBookById, updateBook } from "@/lib/features/books/booksSlice";
 import { BookT } from "@/types/book";
@@ -10,11 +10,10 @@ import styles from "@/styles/components/sections/add-book-form.module.css";
 
 type FormPropsT = {
   book: BookT;
-  setBook: Dispatch<SetStateAction<BookT | null>>;
 };
 
 const Form = (props: FormPropsT) => {
-  const { book, setBook } = props;
+  const [book, setBook] = useState(props.book);
 
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -109,10 +108,8 @@ const Form = (props: FormPropsT) => {
 };
 
 const Page = ({ params }: { params: Promise<{ bookId: string }> }) => {
-  const [bookId, setBookId] = useState<string | null>(null);
-  const [book, setBook] = useState<BookT | null>(null);
-
-  const books: Map<string, BookT> = useAppSelector((state) => state.books.booksMap);
+  const [bookId, setBookId] = useState<string>("");
+  const book = useAppSelector((state) => state.books.booksById[bookId]);
 
   const dispatch = useAppDispatch();
 
@@ -124,14 +121,15 @@ const Page = ({ params }: { params: Promise<{ bookId: string }> }) => {
 
   useEffect(() => {
     if (!bookId) return;
-    if (!books.get(bookId)) dispatch(getBookById(bookId));
-    setBook(books.get(bookId) || null);
-  }, [bookId, books, dispatch]);
+    if (!book) dispatch(getBookById(bookId));
+  }, [book, bookId, dispatch]);
+
+  console.log(book);
 
   if (!book) return;
   return (
     <section>
-      <Form book={book} setBook={setBook} />
+      <Form book={book} />
     </section>
   );
 };

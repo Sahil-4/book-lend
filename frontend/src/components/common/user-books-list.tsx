@@ -4,7 +4,7 @@ import { useCallback, useEffect } from "react";
 import { List } from "@/components/sections";
 import { BookItem } from "@/components/common";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { getAllBooks } from "@/lib/features/books/booksSlice";
+import { getAllBooks, getBooksByUserId } from "@/lib/features/books/booksSlice";
 import { BookT } from "@/types/book";
 import styles from "@/styles/components/common/books-list.module.css";
 
@@ -17,7 +17,7 @@ const UserBooksList = (props: PropsType) => {
 
   const dispatch = useAppDispatch();
 
-  const books: BookT[] = useAppSelector((state) => state.books.books);
+  const books: BookT[] = useAppSelector((state) => getBooksByUserId(state.books, userId));
 
   const loadMore = useCallback(() => {
     dispatch(getAllBooks());
@@ -32,9 +32,7 @@ const UserBooksList = (props: PropsType) => {
       <p>User books</p>
       <List className={styles.books_list} callback={loadMore}>
         {books.map((book) => {
-          if (book.sellerId === userId) {
-            return <BookItem key={book.id} book={book} />;
-          }
+          return <BookItem key={book.id} bookId={book.id} />;
         })}
       </List>
     </section>

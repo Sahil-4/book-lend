@@ -5,26 +5,26 @@ import Toolbar from "@/app/chats/components/tool-bar";
 import Bottombar from "@/app/chats/components/bottom-bar";
 import MessageListContainer from "@/app/chats/components/messages-list-container";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { addChatMessage, getChat } from "@/lib/features/chats/chatsSlice";
+import { addChatMessage } from "@/lib/features/chats/chatsSlice";
+import { ChatT } from "@/types/chat";
 import { UserT } from "@/types/user";
 import { MessageCreate } from "@/types/message";
 import styles from "@/styles/pages/chats.module.css";
 
 type propsT = {
-  _id: string | null;
+  chatId: string;
 };
 
-const MessageContainer = ({ _id }: propsT) => {
+const MessageContainer = ({ chatId }: propsT) => {
   const user: UserT = useAppSelector((state) => state.auth.user);
-  const chat = useAppSelector((state) => (_id ? getChat(state.chats, _id) : null));
+  const chat: ChatT = useAppSelector((state) => state.chats.chatsById[chatId]);
 
   const dispatch = useAppDispatch();
   const router = useRouter();
 
   if (!chat) return <div className={styles.messages_container} />;
 
-  const recipient =
-    chat.participants[0].id !== user.id ? chat.participants[0] : chat.participants[1];
+  const recipient = chat.participants.find((p) => p.id !== user.id)!;
 
   const sendMessage = (text: string) => {
     const message: MessageCreate = {

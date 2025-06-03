@@ -27,14 +27,19 @@ const ReceivedMessage = ({ message }: { message: MessageT }) => {
   );
 };
 
-const MessageBubble = ({ message, mine }: { message: MessageT; mine: boolean }) => {
+const MessageBubble = ({ messageId }: { messageId: string }) => {
+  const user = useAppSelector((state) => state.auth.user);
+  const message: MessageT = useAppSelector((state) => state.chats.messagesById[messageId]);
+  const mine = message.senderId === user.id;
+
   if (mine) return <SentMessage message={message} />;
   return <ReceivedMessage message={message} />;
 };
 
 const MessageListContainer = ({ chat }: { chat: ChatT }) => {
-  const user = useAppSelector((state) => state.auth.user);
-  const messages: MessageT[] = useAppSelector((state) => state.chats.chatsMessages.get(chat.id));
+  const messageIds: string[] = useAppSelector(
+    (state) => state.chats.messageIdByChatId[chat.id] || [],
+  );
   const dispatch = useAppDispatch();
 
   const messageEndRef = useRef<HTMLDivElement>(null);
@@ -46,17 +51,17 @@ const MessageListContainer = ({ chat }: { chat: ChatT }) => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [scrollToBottom, messages]);
+  }, [scrollToBottom, messageIds]);
 
   useEffect(() => {
-    if (messages) return;
+    if (messageIds.length) return;
     dispatch(getChatMessages({ chatId: chat.id }));
-  }, [chat.id, dispatch, messages]);
+  }, [chat.id, dispatch, messageIds.length]);
 
   return (
     <div className={styles.message_list_container} ref={messageEndRef}>
-      {messages?.map((message) => (
-        <MessageBubble key={message.id} message={message} mine={user.id === message.senderId} />
+      {messageIds.map((messageId) => (
+        <MessageBubble key={messageId} messageId={messageId} />
       ))}
     </div>
   );
