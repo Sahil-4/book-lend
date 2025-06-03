@@ -120,8 +120,12 @@ const chatsSlice = createSlice({
 export const findChatByUserIds = (state: ChatsSliceState, userId1: string, userId2: string) => {
   for (const chatId of state.chatIds) {
     const participants = state.chatsById[chatId].participants;
-    if (participants[0].id === userId1 && participants[1].id === userId2) return chatId;
-    if (participants[1].id === userId1 && participants[2].id === userId2) return chatId;
+    if (
+      (participants[0].id === userId1 && participants[1].id === userId2) ||
+      (participants[1].id === userId1 && participants[2].id === userId2)
+    ) {
+      return state.chatsById[chatId];
+    }
   }
   return null;
 };
