@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import * as chatsAPI from "@/api/chat";
 import { ChatT } from "@/types/chat";
 import { RootState } from "@/lib/store";
@@ -31,7 +31,14 @@ const initialState: ChatsSliceState = {
 const chatsSlice = createSlice({
   name: "chats",
   initialState,
-  reducers: {},
+  reducers: {
+    messageReceived(state, action: PayloadAction<MessageT>) {
+      state.messagesById[action.payload.id] = action.payload;
+      const allMessages = state.messageIdByChatId[action.payload.chatId] || [];
+      allMessages.unshift(action.payload.id);
+      state.messageIdByChatId[action.payload.chatId] = allMessages;
+    },
+  },
   extraReducers(builder) {
     builder.addCase(getAllChats.rejected, (state, action) => {
       state.loading = false;
@@ -178,5 +185,5 @@ export const deleteChatMessage = createAsyncThunk(
 );
 
 export type { ChatsSliceState };
-export const {} = chatsSlice.actions;
+export const { messageReceived } = chatsSlice.actions;
 export default chatsSlice;

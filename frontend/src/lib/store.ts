@@ -3,6 +3,7 @@ import authSlice from "@/lib/features/auth/authSlice";
 import booksSlice from "@/lib/features/books/booksSlice";
 import chatsSlice from "@/lib/features/chats/chatsSlice";
 import userSlice from "@/lib/features/users/userSlice";
+import { socketMiddleware } from "./middleware/socketMiddleware";
 
 export const makeStore = () => {
   return configureStore({
@@ -13,9 +14,10 @@ export const makeStore = () => {
       chatsSlice,
       userSlice,
     ),
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware({
-      serializableCheck: false,
-    }),
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: false,
+      }).concat(socketMiddleware),
   });
 };
 
