@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { getChatMessages } from "@/lib/features/chats/chatsSlice";
+import { List } from "@/components/sections";
 import { ChatT } from "@/types/chat";
 import { MessageT } from "@/types/message";
 import styles from "@/styles/pages/chats.module.css";
@@ -37,6 +38,8 @@ const MessageBubble = ({ messageId }: { messageId: string }) => {
 };
 
 const MessageListContainer = ({ chat }: { chat: ChatT }) => {
+  const [page, setPage] = useState<number>(1);
+
   const messageIds: string[] = useAppSelector(
     (state) => state.chats.messageIdByChatId[chat.id] || [],
   );
@@ -49,7 +52,15 @@ const MessageListContainer = ({ chat }: { chat: ChatT }) => {
     messageEndRef.current.scroll({ top: messageEndRef.current.scrollHeight });
   }, []);
 
+  const loadMore = () => {
+    setPage((page) => page + 1);
+    dispatch(getChatMessages({ chatId: chat.id, page }));
+  };
+
   useEffect(() => {
+    // !TODO - have to fix this,
+    // need another way to prevent scroll to bottom if user is currently scrolling
+    if (messageIds.length > 30) return;
     scrollToBottom();
   }, [scrollToBottom, messageIds]);
 
@@ -60,9 +71,11 @@ const MessageListContainer = ({ chat }: { chat: ChatT }) => {
 
   return (
     <div className={styles.message_list_container} ref={messageEndRef}>
-      {messageIds.map((messageId) => (
-        <MessageBubble key={messageId} messageId={messageId} />
-      ))}
+      <List className={styles.message_list_messages} callback={loadMore}>
+        {messageIds.map((messageId) => (
+          <MessageBubble key={messageId} messageId={messageId} />
+        ))}
+      </List>
     </div>
   );
 };

@@ -90,6 +90,11 @@
   padding: var(--spacing-small);
 }
 
+.message_list_messages {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
 .chat_bubble_container {
   display: flex;
   margin: 8px 0;
