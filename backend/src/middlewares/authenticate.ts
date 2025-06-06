@@ -54,7 +54,7 @@ export const verifyAccessTokenSocket = async (
   next: (err?: ExtendedError) => void,
 ) => {
   try {
-    const __access_token__ = String(socket.handshake.headers.__access_token__);
+    const __access_token__ = String(socket.handshake.auth.__access_token__);
 
     const payload = jwt.verify(__access_token__, String(process.env.JWT_SECRET)) as {
       id: string;
