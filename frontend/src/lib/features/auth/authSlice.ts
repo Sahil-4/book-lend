@@ -6,14 +6,14 @@ interface AuthSliceState {
   error: unknown;
   loading: boolean;
   authenticated: boolean;
-  user: UserT | null;
+  user: UserT | null | undefined;
 }
 
 const initialState: AuthSliceState = {
   error: null,
   loading: false,
   authenticated: false,
-  user: null,
+  user: undefined,
 };
 
 const authSlice = createSlice({
