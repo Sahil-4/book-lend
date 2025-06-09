@@ -20,9 +20,9 @@ export const getAllBooks = async (page: number = 1, limit: number = 10) => {
   }
 };
 
-export const searchBooks = async (query: string, page: number = 1, limit: number = 10) => {
+export const searchBooks = async (query: string, page: number = 1, limit: number = 40) => {
   try {
-    const response = await API.get(`/api/v1/books/search?${query}?page=${page}&limit=${limit}`);
+    const response = await API.get(`/api/v1/books/search?${query}&page=${page}&limit=${limit}`);
     return response.data as ResponseType;
   } catch (error) {
     handleApiError(error);

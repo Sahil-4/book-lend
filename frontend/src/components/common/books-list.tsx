@@ -9,7 +9,7 @@ import styles from "@/styles/components/common/books-list.module.css";
 
 const BooksList = () => {
   const dispatch = useAppDispatch();
-  const bookIds: string[] = useAppSelector((state) => state.books.bookIds);
+  const bookIds: string[] = useAppSelector((state) => state.books.resultIds);
 
   const loadMore = useCallback(() => {
     dispatch(getAllBooks());

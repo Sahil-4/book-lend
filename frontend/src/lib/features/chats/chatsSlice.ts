@@ -129,7 +129,7 @@ export const findChatByUserIds = (state: ChatsSliceState, userId1: string, userI
     const participants = state.chatsById[chatId].participants;
     if (
       (participants[0].id === userId1 && participants[1].id === userId2) ||
-      (participants[1].id === userId1 && participants[2].id === userId2)
+      (participants[1].id === userId1 && participants[0].id === userId2)
     ) {
       return state.chatsById[chatId];
     }

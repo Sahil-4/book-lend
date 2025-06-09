@@ -37,6 +37,10 @@ const Form = (props: FormPropsT) => {
     router.push("/browse");
   };
 
+  const goBack = () => {
+    router.back();
+  };
+
   return (
     <form onSubmit={handleFormSubmit} className={styles.add_book_form}>
       <div className={styles.add_book_form__left_area}>
@@ -101,7 +105,10 @@ const Form = (props: FormPropsT) => {
       </div>
 
       <div className={styles.add_book_form__buttons}>
-        <button type="submit">Post</button>
+        <button type="submit">Update</button>
+        <button type="button" onClick={goBack}>
+          Cancel
+        </button>
       </div>
     </form>
   );
@@ -123,8 +130,6 @@ const Page = ({ params }: { params: Promise<{ bookId: string }> }) => {
     if (!bookId) return;
     if (!book) dispatch(getBookById(bookId));
   }, [book, bookId, dispatch]);
-
-  console.log(book);
 
   if (!book) return;
   return (

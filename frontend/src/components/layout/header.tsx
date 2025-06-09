@@ -60,7 +60,7 @@ const Header = () => {
 
       <nav className={styles.header__nav}>
         <ul>
-          {navLinks.map((val) => {
+          {authenticated && navLinks.map((val) => {
             return (
               <li key={val.key}>
                 <Link href={val.href}>{val.name}</Link>

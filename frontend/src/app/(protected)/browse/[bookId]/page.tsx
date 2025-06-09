@@ -5,12 +5,13 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { getBookById } from "@/lib/features/books/booksSlice";
+import { BookT } from "@/types/book";
 import { UserT } from "@/types/user";
 import styles from "@/styles/pages/browse-books.module.css";
 
 const Page = ({ params }: { params: Promise<{ bookId: string }> }) => {
   const [bookId, setBookId] = useState<string>("");
-  const book = useAppSelector((state) => state.books.booksById[bookId]);
+  const book: BookT | null = useAppSelector((state) => state.books.booksById[bookId]);
   const user: UserT = useAppSelector((state) => state.auth.user);
 
   const dispatch = useAppDispatch();
@@ -32,7 +33,7 @@ const Page = ({ params }: { params: Promise<{ bookId: string }> }) => {
       <div className={styles.book_details}>
         <div className={styles.book_details_container}>
           <div className={styles.book_details__image_container}>
-            <Image src={book.cover || "/thumbnail.jpg"} alt="book album" fill={true} />
+            <Image src={book.cover || "/thumbnail.jpg"} alt={book.title} fill={true} />
           </div>
 
           <div className={styles.book_details__metadata_container}>
@@ -44,9 +45,7 @@ const Page = ({ params }: { params: Promise<{ bookId: string }> }) => {
             </Link>
             <p>Price: {book.price}</p>
             {user && user.id !== book.sellerId && (
-              <Link
-                href={`/chats/user/${book.sellerId}`}
-                className={styles.book_details__link_button}>
+              <Link href={`/chats/u/${book.sellerId}`} className={styles.book_details__link_button}>
                 Chat with seller
               </Link>
             )}

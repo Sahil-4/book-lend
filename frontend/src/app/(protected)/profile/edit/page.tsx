@@ -26,6 +26,10 @@ const Page = () => {
     router.push(`/profile/${user?.id}`);
   };
 
+  const goBack = () => {
+    router.back();
+  };
+
   if (!user) return;
   return (
     <section>
@@ -59,6 +63,7 @@ const Page = () => {
           </div>
 
           <button type="submit">Update profile</button>
+          <button type="button" onClick={goBack}>Cancel</button>
         </form>
       </div>
     </section>

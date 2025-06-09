@@ -19,7 +19,7 @@ const Footer = () => {
 
   return (
     <footer className={styles.footer}>
-      <div className={styles.footer_section_1}>
+      <div className={styles.footer_section}>
         <span>About Us</span>
         <p>
           Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
@@ -27,7 +27,7 @@ const Footer = () => {
           took a galley of type
         </p>
       </div>
-      <div className={styles.footer_section_2}>
+      <div className={styles.footer_section}>
         <span>Quick Links</span>
         <ul>
           {quickLinks.map((qLink) => {
@@ -39,7 +39,7 @@ const Footer = () => {
           })}
         </ul>
       </div>
-      <div className={styles.footer_section_3}>
+      <div className={styles.footer_section}>
         <span>Support Links</span>
         <ul>
           {supportLinks.map((sLink) => {

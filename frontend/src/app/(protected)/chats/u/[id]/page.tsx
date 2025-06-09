@@ -14,7 +14,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
 
   useEffect(() => {
     (async () => {
-      setResolvedId((await params).id);
+      setResolvedId((await params)?.id);
     })();
   }, [params]);
 
@@ -23,13 +23,13 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
   useEffect(() => {
     if (!resolvedId || !userIdSelf) return;
 
-    if (chat?.id) {
-      router.push(`/chats/${chat.id}`);
+    if (chat && chat.id) {
+      router.push(`/chats/c/${chat.id}`);
     } else {
       dispatch(createChat({ participant1: userIdSelf, participant2: resolvedId }))
         .unwrap()
         .then((res) => {
-          router.push(`/chats/${(res?.data as ChatT).id}`);
+          router.push(`/chats/c/${(res?.data as ChatT).id}`);
         });
     }
   }, [chat, dispatch, router, resolvedId, userIdSelf]);

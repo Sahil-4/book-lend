@@ -59,7 +59,6 @@ const booksSlice = createSlice({
       state.error = action.error.message;
     });
     builder.addCase(getAllBooks.fulfilled, (state, action) => {
-      state.resultIds = [];
       (action.payload?.data as BookT[]).forEach((book) => {
         state.booksById[book.id] = book;
         if (!state.resultIds.includes(book.id)) state.resultIds.push(book.id);
@@ -104,7 +103,7 @@ const booksSlice = createSlice({
       const book: BookT = action.payload?.data as BookT;
       state.booksById[book.id] = book;
       if (!state.bookIds.includes(book.id)) state.bookIds.push(book.id);
-      if (!state.resultIds.includes(book.id)) state.resultIds.push(book.id);
+      if (!state.resultIds.includes(book.id)) state.resultIds.unshift(book.id);
       state.loading = false;
       state.error = null;
     });
@@ -144,7 +143,7 @@ const booksSlice = createSlice({
     builder.addCase(createBook.fulfilled, (state, action) => {
       const book: BookT = action.payload?.data as BookT;
       state.booksById[book.id] = book;
-      if (!state.resultIds.includes(book.id)) state.resultIds.push(book.id);
+      if (!state.resultIds.includes(book.id)) state.resultIds.unshift(book.id);
       if (!state.bookIds.includes(book.id)) state.bookIds.push(book.id);
       if (!state.myBookIds.includes(book.id)) state.myBookIds.push(book.id);
       state.loading = false;
@@ -157,7 +156,7 @@ const booksSlice = createSlice({
     builder.addCase(updateBook.fulfilled, (state, action) => {
       const book: BookT = action.payload?.data as BookT;
       state.booksById[book.id] = book;
-      if (!state.resultIds.includes(book.id)) state.resultIds.push(book.id);
+      if (!state.resultIds.includes(book.id)) state.resultIds.unshift(book.id);
       if (!state.bookIds.includes(book.id)) state.bookIds.push(book.id);
       if (!state.myBookIds.includes(book.id)) state.myBookIds.push(book.id);
       state.loading = false;

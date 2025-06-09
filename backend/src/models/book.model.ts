@@ -92,9 +92,9 @@ export const searchBooks = async (
 ): Promise<Book[]> => {
   return await prisma.book.findMany({
     where: {
-      OR: [
-        { title: { contains: queryObj.title } },
-        { description: { contains: queryObj.description } },
+      AND: [
+        { title: { contains: queryObj.title, mode: "insensitive" } },
+        { description: { contains: queryObj.description, mode: "insensitive" } },
         { author: { contains: queryObj.author } },
         { genre: { contains: queryObj.genre } },
       ],
