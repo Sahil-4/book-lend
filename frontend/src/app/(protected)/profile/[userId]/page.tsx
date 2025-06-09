@@ -44,7 +44,7 @@ const Page = ({ params }: { params: Promise<{ userId: string }> }) => {
   }, [params]);
 
   useEffect(() => {
-    if (authState.user?.id == userId) {
+    if (authState.user && authState.user?.id == userId) {
       setUser(authState.user);
     }
   }, [authState.user, dispatch, userId]);
