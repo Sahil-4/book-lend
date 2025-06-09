@@ -29,8 +29,13 @@ const SignupForm = ({
 
     if (!name || !phone || !username || !password) return;
 
-    dispatch(signup({ name, phone, username, password, bio: "" }));
-    router.push("/");
+    dispatch(signup({ name, phone, username, password, bio: "" }))
+      .unwrap()
+      .then((resp) => {
+        if (resp?.success) {
+          router.push("/");
+        }
+      });
   };
 
   return (
@@ -81,8 +86,13 @@ const LoginForm = ({
 
     if (!phone || !username || !password) return;
 
-    dispatch(login({ phone, username, password }));
-    router.push("/");
+    dispatch(login({ phone, username, password }))
+      .unwrap()
+      .then((resp) => {
+        if (resp?.success) {
+          router.push("/");
+        }
+      });
   };
 
   return (

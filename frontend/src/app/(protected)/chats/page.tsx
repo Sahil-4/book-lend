@@ -1,6 +1,6 @@
 "use client";
 
-import ChatsList from "@/app/chats/components/sidebar";
+import ChatsList from "@/app/(protected)/chats/components/sidebar";
 import styles from "@/styles/pages/chats.module.css";
 
 const Page = () => {

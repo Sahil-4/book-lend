@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Footer, Header } from "@/components/layout";
-import AuthGuard from "./AuthGuard";
 import StoreProvider from "@/app/StoreProvider";
 import "@/styles/globals.css";
 
@@ -15,7 +14,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body>
         <StoreProvider>
           <Header />
-          <AuthGuard>{children}</AuthGuard>
+          {children}
           <Footer />
         </StoreProvider>
       </body>

@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import ChatsList from "@/app/chats/components/sidebar";
-import MessageContainer from "@/app/chats/components/message-container";
+import ChatsList from "@/app/(protected)/chats/components/sidebar";
+import MessageContainer from "@/app/(protected)/chats/components/message-container";
 import styles from "@/styles/pages/chats.module.css";
 
 const Page = ({ params }: { params: Promise<{ id: string }> }) => {

@@ -1,9 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import Toolbar from "@/app/chats/components/tool-bar";
-import Bottombar from "@/app/chats/components/bottom-bar";
-import MessageListContainer from "@/app/chats/components/messages-list-container";
+import Toolbar from "@/app/(protected)/chats/components/tool-bar";
+import Bottombar from "@/app/(protected)/chats/components/bottom-bar";
+import MessageListContainer from "@/app/(protected)/chats/components/messages-list-container";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { addChatMessage } from "@/lib/features/chats/chatsSlice";
 import { ChatT } from "@/types/chat";
