@@ -9,6 +9,7 @@ import styles from "@/styles/components/sections/add-book-form.module.css";
 
 const Form = () => {
   const [cover, setCover] = useState<string>("");
+  const [preview, setPreview] = useState<string>("Preview");
   const dispatch = useAppDispatch();
   const router = useRouter();
 
@@ -23,6 +24,11 @@ const Form = () => {
   const updateCoverURI = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     if (file) setCover(URL.createObjectURL(file));
+  };
+
+  const updatePreview = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files ? e.target.files[0] : null;
+    if (file) setPreview(file.name || "Preview");
   };
 
   const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -56,8 +62,8 @@ const Form = () => {
         <input type="text" placeholder="Author" name="author" />
         <input type="text" placeholder="Genre" name="genre" />
 
-        <input type="file" name="preview" id="preview" accept="application/pdf" />
-        <label htmlFor="preview">Preview</label>
+        <input type="file" name="preview" id="preview" accept="application/pdf" onChange={updatePreview}/>
+        <label htmlFor="preview">{preview}</label>
       </div>
 
       <div className={styles.add_book_form__buttons}>

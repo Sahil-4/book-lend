@@ -18,10 +18,16 @@ const Form = (props: FormPropsT) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [cover, setCover] = useState<string>(book.cover || "");
+  const [preview, setPreview] = useState<string>("Preview");
 
   const updateCoverURI = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     if (file) setCover(URL.createObjectURL(file));
+  };
+
+  const updatePreview = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files ? e.target.files[0] : null;
+    if (file) setPreview(file.name || "Preview");
   };
 
   const updateBookDetails = (
@@ -99,9 +105,9 @@ const Form = (props: FormPropsT) => {
           name="preview"
           id="preview"
           accept="application/pdf"
-          onChange={updateBookDetails}
+          onChange={updatePreview}
         />
-        <label htmlFor="preview">Preview</label>
+        <label htmlFor="preview">{preview}</label>
       </div>
 
       <div className={styles.add_book_form__buttons}>

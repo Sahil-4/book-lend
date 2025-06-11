@@ -16,7 +16,7 @@
 .add_book_form__right_area > textarea,
 .add_book_form__right_area > input,
 .add_book_form__right_area > label {
-  height: 32px;
+  height: auto;
   width: 100%;
   font-size: var(--font-size-large);
   display: block;
@@ -25,6 +25,7 @@
   border: 1px solid var(--accent-color);
   outline: none;
   margin: var(--spacing-medium);
+  padding: var(--spacing-small);
 }
 
 .add_book_form__left_area > label:nth-child(2) {
@@ -36,7 +37,7 @@
 }
 
 .add_book_form__right_area > textarea:nth-child(2) {
-  height: 224px;
+  height: 200px;
 }
 
 .add_book_form__left_area > input::placeholder,

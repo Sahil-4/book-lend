@@ -28,7 +28,7 @@
 .edit_profile_form_right > input,
 .edit_profile_form_right > textarea {
   width: 320px;
-  height: 28px;
+  height: auto;
   color: var(--accent-color);
   background: var(--secondary-color);
   display: block;
@@ -36,6 +36,7 @@
   font-size: var(--font-size-large);
   border: 1px solid var(--accent-color);
   outline: none;
+  padding: var(--spacing-small);
 }
 
 .edit_profile_form_right > input::placeholder,
