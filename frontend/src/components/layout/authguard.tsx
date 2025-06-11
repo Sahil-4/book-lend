@@ -14,6 +14,6 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     }
   }, [user, router]);
 
-  if (user === undefined) return null;
-  return <>{children}</>;
+  if (user) return <>{children}</>;
+  return null;
 }
