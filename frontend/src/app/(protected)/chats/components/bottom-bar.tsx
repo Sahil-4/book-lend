@@ -6,8 +6,8 @@ const Bottombar = ({ sendMessage }: { sendMessage: (text: string) => void }) => 
 
   const handleClick = () => {
     if (!inputRef.current) return;
-    const text = inputRef.current.value;
-    sendMessage(text);
+    const text = inputRef.current.value.trim();
+    if (text) sendMessage(text);
     inputRef.current.value = "";
   };
 

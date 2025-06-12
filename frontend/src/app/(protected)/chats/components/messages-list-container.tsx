@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { getChatMessages } from "@/lib/features/chats/chatsSlice";
+import { formatTime } from "@/utils/formatters";
 import { List } from "@/components/sections";
 import { ChatT } from "@/types/chat";
 import { MessageT } from "@/types/message";
@@ -11,7 +12,7 @@ const SentMessage = ({ message }: { message: MessageT }) => {
     <div className={styles.chat_bubble_container}>
       <div className={styles.chat_bubble_sent}>
         <p>{message.content}</p>
-        <p>{message.createdAt}</p>
+        <p>{formatTime(message.createdAt)}</p>
       </div>
     </div>
   );
@@ -22,7 +23,7 @@ const ReceivedMessage = ({ message }: { message: MessageT }) => {
     <div className={styles.chat_bubble_container}>
       <div className={styles.chat_bubble_received}>
         <p>{message.content}</p>
-        <p>{message.createdAt}</p>
+        <p>{formatTime(message.createdAt)}</p>
       </div>
     </div>
   );
