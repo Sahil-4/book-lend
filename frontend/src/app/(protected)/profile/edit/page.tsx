@@ -10,7 +10,7 @@ import styles from "@/styles/pages/edit-profile.module.css";
 
 const Page = () => {
   const [avatar, setAvatar] = useState<string>("");
-  const user: UserT | null = useAppSelector((state) => state.auth.user);
+  const [user, setUser] = useState(useAppSelector<UserT | null>((state) => state.auth.user));
   const dispatch = useAppDispatch();
   const router = useRouter();
 
@@ -28,6 +28,10 @@ const Page = () => {
 
   const goBack = () => {
     router.back();
+  };
+
+  const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setUser((prev) => ({ ...prev, [e.target.name]: e.target.value } as UserT));
   };
 
   if (!user) return;
@@ -51,7 +55,13 @@ const Page = () => {
 
           <div className={styles.edit_profile_form_right}>
             <input type="text" name="username" disabled={true} value={user.username} />
-            <input type="text" placeholder="name" name="name" />
+            <input
+              type="text"
+              placeholder="name"
+              name="name"
+              value={user.name}
+              onChange={handleOnChange}
+            />
             <input
               type="number"
               placeholder="phone "
