@@ -8,6 +8,7 @@ export const uploadToCloudinary = async (filePath: string, folder: string) => {
       cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
       api_key: process.env.CLOUDINARY_API_KEY,
       api_secret: process.env.CLOUDINARY_API_SECRET,
+      secure: true,
     });
 
     const result = await cloudinary.uploader.upload(filePath, {
@@ -15,7 +16,7 @@ export const uploadToCloudinary = async (filePath: string, folder: string) => {
       resource_type: "image",
     });
 
-    return result.url;
+    return result.secure_url;
   } catch (error: any) {
     logger.error(error.message);
     throw new Error("failed to upload file");
