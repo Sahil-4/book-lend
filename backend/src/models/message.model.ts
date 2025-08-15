@@ -6,8 +6,8 @@ interface Message {
   type: string;
   content: string;
   isRead: boolean;
-  senderId: string;
-  receiverId: string;
+  senderId: string | null;
+  receiverId: string | null;
   chatId: string;
   createdAt: Date;
   updatedAt: Date;

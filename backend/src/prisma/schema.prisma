@@ -42,7 +42,7 @@ model Book {
   price Float
   status       Status
   sellerId     String
-  seller       User     @relation(fields: [sellerId], references: [id])
+  seller       User     @relation(fields: [sellerId], references: [id], onDelete: Cascade)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
@@ -54,7 +54,7 @@ model Notification {
   content   String
   isRead    Boolean  @default(false)
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Chat {
@@ -70,12 +70,12 @@ model Message {
   type       String
   content    String
   isRead     Boolean  @default(false)
-  senderId   String
-  receiverId String
+  senderId   String?
+  receiverId String?
   chatId     String
-  sender     User     @relation("messagesSent", fields: [senderId], references: [id])
-  receiver   User     @relation("messagesReceived", fields: [receiverId], references: [id])
-  chat       Chat     @relation(fields: [chatId], references: [id])
+  sender     User?    @relation("messagesSent", fields: [senderId], references: [id], onDelete: SetNull)
+  receiver   User?    @relation("messagesReceived", fields: [receiverId], references: [id], onDelete: SetNull)
+  chat       Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
