@@ -29,7 +29,7 @@ const SignupForm = ({
 
     if (!name || !phone || !username || !password) return;
 
-    dispatch(signup({ name, phone, username, password, bio: "" }))
+    dispatch(signup({ name, phone, username, password }))
       .unwrap()
       .then((resp) => {
         if (resp?.success) {

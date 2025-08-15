@@ -14,7 +14,7 @@ interface UserT {
 
 type UserLogin = Pick<UserT, "username" | "phone" | "password">;
 
-type UserSignup = Pick<UserT, "username" | "name" | "phone" | "bio" | "password">;
+type UserSignup = Pick<UserT, "username" | "name" | "phone" | "password">;
 
 type UserProfile = Omit<UserT, "password">;
 
