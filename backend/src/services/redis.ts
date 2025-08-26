@@ -1,10 +1,10 @@
 import Redis from "ioredis";
 import logger from "../utils/logger.js";
 
-const redis = new Redis({
-  host: process.env.REDIS_HOST,
-  port: parseInt(process.env.REDIS_PORT || "6379"),
-  password: process.env.REDIS_PASSWORD,
+if (!process.env.REDIS_URL) throw new Error("Invalid REDIS_URL");
+
+const redis = new Redis(process.env.REDIS_URL, {
+  tls: {},
   connectTimeout: 10000,
   retryStrategy: (times) => Math.min(times * 50, 2000),
 });
