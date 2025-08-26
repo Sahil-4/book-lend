@@ -10,7 +10,13 @@ import styles from "@/styles/pages/chats.module.css";
 const Chat = ({ chatId }: { chatId: string }) => {
   const user: UserT = useAppSelector((state) => state.auth.user);
   const chat: ChatT = useAppSelector((state) => state.chats.chatsById[chatId]);
-  const recipient = chat.participants.find((p) => p.id !== user.id)!;
+  const recipient: Pick<UserT, "username" | "name" | "avatar"> = chat.participants.find(
+    (p) => p.id !== user.id,
+  ) || {
+    username: "Deleted User",
+    name: "Deleted User",
+    avatar: null,
+  };
 
   return (
     <div className={styles.chats_list_item}>

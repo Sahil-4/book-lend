@@ -24,7 +24,14 @@ const MessageContainer = ({ chatId }: propsT) => {
 
   if (!chat) return <div className={styles.messages_container} />;
 
-  const recipient = chat.participants.find((p) => p.id !== user.id)!;
+  const recipient: Pick<UserT, "name" | "id" | "username" | "avatar" | "bio"> =
+    chat.participants.find((p) => p.id !== user.id) || {
+      id: "",
+      name: "Deleted User",
+      username: "Deleted User",
+      avatar: null,
+      bio: "",
+    };
 
   const sendMessage = (text: string) => {
     const message: MessageCreate = {
@@ -45,7 +52,7 @@ const MessageContainer = ({ chatId }: propsT) => {
     <div className={styles.messages_container}>
       <Toolbar closeChat={closeChat} recipient={recipient} />
       <MessageListContainer chat={chat} />
-      <Bottombar sendMessage={sendMessage} />
+      <Bottombar sendMessage={sendMessage} disabled={recipient.id !== ""} />
     </div>
   );
 };
