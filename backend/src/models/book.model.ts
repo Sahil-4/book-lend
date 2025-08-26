@@ -154,7 +154,7 @@ export const getAllAuthors = async (take: number, skip: number): Promise<string[
     skip: skip,
   });
 
-  return result.map((book) => book.author);
+  return result.map((book: { author: string }) => book.author);
 };
 
 export const getAllGenres = async (take: number, skip: number): Promise<string[]> => {
@@ -168,7 +168,7 @@ export const getAllGenres = async (take: number, skip: number): Promise<string[]
     skip: skip,
   });
 
-  return result.map((book) => book.genre);
+  return result.map((book: { genre: string }) => book.genre);
 };
 
 export type { Book };

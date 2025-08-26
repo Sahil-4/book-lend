@@ -72,7 +72,7 @@ export const deleteMessage = async (senderId: string, id: string): Promise<Messa
 export const deleteAllMessages = async (
   userId: string,
   chatId: string,
-): Promise<Prisma.BatchPayload> => {
+): Promise<{ count: number }> => {
   return await prisma.message.deleteMany({
     where: { senderId: userId, chatId: chatId },
   });
