@@ -98,7 +98,7 @@ const chatsSlice = createSlice({
     builder.addCase(addChatMessage.fulfilled, (state, action) => {
       const message = action.payload?.data as MessageT;
       const messages = state.messageIdByChatId[message.chatId];
-      messages.push(message.id);
+      messages.unshift(message.id);
       state.messagesById[message.id] = message;
       state.loading = false;
       state.error = null;

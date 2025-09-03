@@ -1,7 +1,6 @@
 "use client";
 
-import { useCallback, useEffect } from "react";
-import { List } from "@/components/sections";
+import InfiniteScroll from "react-infinite-scroll-smart";
 import { BookItem } from "@/components/common";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { getAllBooks, getBooksByUserId } from "@/lib/features/books/booksSlice";
@@ -18,23 +17,26 @@ const UserBooksList = (props: PropsType) => {
   const dispatch = useAppDispatch();
 
   const books: BookT[] = useAppSelector((state) => getBooksByUserId(state.books, userId));
+  const hasNext: boolean = useAppSelector((state) => state.books.hasMore_myBooks);
 
-  const loadMore = useCallback(() => {
-    dispatch(getAllBooks());
-  }, [dispatch]);
-
-  useEffect(() => {
-    loadMore();
-  }, [loadMore]);
+  const loadMore = async () => {
+    await dispatch(getAllBooks());
+  };
 
   return (
     <section className={styles.books_list_container}>
       <p>User books</p>
-      <List className={styles.books_list} callback={loadMore}>
-        {books.map((book) => {
-          return <BookItem key={book.id} bookId={book.id} />;
-        })}
-      </List>
+      <InfiniteScroll
+        callback={loadMore}
+        disabled={!hasNext}
+        direction="bottom"
+        useWindowScroll={true}>
+        <div className={styles.books_list}>
+          {books.map((book) => {
+            return <BookItem key={book.id} bookId={book.id} />;
+          })}
+        </div>
+      </InfiniteScroll>
     </section>
   );
 };

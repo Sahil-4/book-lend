@@ -51,7 +51,7 @@ const MessageContainer = ({ chatId }: propsT) => {
   return (
     <div className={styles.messages_container}>
       <Toolbar closeChat={closeChat} recipient={recipient} />
-      <MessageListContainer chat={chat} />
+      <MessageListContainer chatId={chat.id} />
       <Bottombar sendMessage={sendMessage} disabled={recipient.id !== ""} />
     </div>
   );
